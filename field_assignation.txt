@@ -1,0 +1,1 @@
+		_$field_name:lower_case$ = data["$field_name:lower_case$"];

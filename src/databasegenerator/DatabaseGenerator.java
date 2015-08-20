@@ -5,11 +5,11 @@
  */
 package databasegenerator;
 
-import com.company.codegenerator.TableMeta;
+import com.company.codegenerator.data.TableMeta;
 import com.company.codegenerator.excel.XLSXTableMetaReader;
+import com.company.codegenerator.generator.CSharpGenerator;
 import java.util.List;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.logging.Logger;
 
 /**
  *
@@ -17,8 +17,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class DatabaseGenerator {
 
-    private static final Logger logger = LogManager.getLogger(DatabaseGenerator.class);
-    
+    private static final Logger logger = Logger.getLogger("DatabaseGenerator");
     /**
      * @param args the command line arguments
      */
@@ -29,9 +28,9 @@ public class DatabaseGenerator {
         reader.Read();
         List<TableMeta> tables = reader.GetTables();
         for(int i=0; i<tables.size(); ++i){
-            logger.error(tables.get(i).toString());
+            logger.info(tables.get(i).toString());
+            CSharpGenerator generator = new CSharpGenerator(tables.get(i));
+            generator.GenerateFiles();
         }
-        
     }
-    
 }

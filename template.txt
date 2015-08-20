@@ -1,0 +1,13 @@
+
+public class $table_name:capital_case$ {
+	
+$fields:file:field_template.txt$
+	
+	public $table_name$()
+	{
+$fields:file:field_assignation.txt$
+	}
+	
+$fields:file:field_getters.txt$
+	
+}

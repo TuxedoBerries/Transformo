@@ -5,14 +5,12 @@
  */
 package com.company.codegenerator.excel;
 
-import com.company.codegenerator.TableMeta;
-import com.company.codegenerator.FieldMeta;
-import com.company.codegenerator.FieldTypeTranslations;
+import com.company.codegenerator.data.TableMeta;
+import com.company.codegenerator.data.FieldMeta;
+import com.company.codegenerator.data.FieldTypeTranslations;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
+import java.util.logging.Logger;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -25,7 +23,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 public class XLSXTableMetaReader extends BaseXLSXReader {
     
     public static final int ROW_META_COUNT = 3;
-    private static final Logger logger = LogManager.getLogger(XLSXTableMetaReader.class);
+    private static final Logger logger = Logger.getLogger("XLSXTableMetaReader");
     private final List<TableMeta> _tableMetas;
     
     public XLSXTableMetaReader(){
@@ -61,7 +59,7 @@ public class XLSXTableMetaReader extends BaseXLSXReader {
     private TableMeta GenerateTableMeta(XSSFSheet sheet){
         int totalRows = sheet.getLastRowNum();
         if(totalRows < ROW_META_COUNT){
-            logger.debug("Total number of rows is too small [{}]", totalRows);
+            logger.warning(String.format("Total number of rows is too small [%d]", totalRows));
             return null;
         }
         
@@ -76,7 +74,6 @@ public class XLSXTableMetaReader extends BaseXLSXReader {
     }
     
     private void GenerateNames(Row row, TableMeta tmeta){
-        Iterator<Cell> cellIterator = row.cellIterator();
         int total = row.getLastCellNum();
         for(int i=0; i<total; ++i){
             FieldMeta fmeta = tmeta.GetOrCreateField(i);
@@ -84,13 +81,12 @@ public class XLSXTableMetaReader extends BaseXLSXReader {
             if(cell.getCellType()== Cell.CELL_TYPE_STRING){
                 fmeta.FieldName = cell.getStringCellValue();
             }else{
-                logger.error("Wrong Cell Type", cell.getCellType());
+                logger.severe(String.format("Wrong Cell Type [%s]", cell.getCellType()));
             }
         }
     }
     
     private void GenerateShortNames(Row row, TableMeta tmeta){
-        Iterator<Cell> cellIterator = row.cellIterator();
         int total = row.getLastCellNum();
         for(int i=0; i<total; ++i){
             FieldMeta fmeta = tmeta.GetOrCreateField(i);
@@ -98,13 +94,12 @@ public class XLSXTableMetaReader extends BaseXLSXReader {
             if(cell.getCellType()== Cell.CELL_TYPE_STRING){
                 fmeta.FieldShortName = cell.getStringCellValue();
             }else{
-                logger.error("Wrong Cell Type", cell.getCellType());
+                logger.severe(String.format("Wrong Cell Type [%s]", cell.getCellType()));
             }
         }
     }
     
     private void GenerateTypes(Row row, TableMeta tmeta){
-        Iterator<Cell> cellIterator = row.cellIterator();
         int total = row.getLastCellNum();
         for(int i=0; i<total; ++i){
             FieldMeta fmeta = tmeta.GetOrCreateField(i);
@@ -112,14 +107,14 @@ public class XLSXTableMetaReader extends BaseXLSXReader {
             if(cell.getCellType()== Cell.CELL_TYPE_STRING){
                 SetDataType(cell, fmeta);
             }else{
-                logger.error("Wrong Cell Type", cell.getCellType());
+                logger.severe(String.format("Wrong Cell Type [%s]", cell.getCellType()));
             }
         }
     }
     
     private void SetDataType(Cell cell, FieldMeta fmeta){
         if(cell.getCellType() != Cell.CELL_TYPE_STRING){
-            logger.error("Bad Cell Type", cell.getCellType());
+            logger.severe(String.format("Wrong Cell Type [%s]", cell.getCellType()));
             return;
         }
         

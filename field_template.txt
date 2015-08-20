@@ -1,0 +1,1 @@
+	private $field_type$ _$field_name:lower_case$;

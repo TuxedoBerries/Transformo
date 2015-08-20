@@ -8,8 +8,7 @@ package com.company.codegenerator.excel;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.logging.Logger;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
@@ -17,7 +16,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  * @author Juan
  */
 public abstract class BaseXLSXReader {
-    private static final Logger logger = LogManager.getLogger(BaseXLSXReader.class);
+    private static final Logger logger = Logger.getLogger("BaseXLSXReader");
     
     protected String _filePath;
     protected XSSFWorkbook _workBook;
@@ -42,7 +41,7 @@ public abstract class BaseXLSXReader {
         try {
             doRead();
         } catch (Exception ex) {
-            logger.error("Error Reading File");
+            logger.severe("Error Reading File");
         }
         
         CloseWorkbook();
@@ -55,7 +54,7 @@ public abstract class BaseXLSXReader {
     private boolean OpenFile(){
         _file = new File(_filePath);
         if(!_file.exists()){
-            logger.error("File does not exist");
+            logger.severe("File does not exist");
             return false;
         }
         
@@ -71,7 +70,7 @@ public abstract class BaseXLSXReader {
         try {
             _stream = new FileInputStream(_file);
         } catch (Exception ex) {
-            logger.error("Error reading file", ex);
+            logger.severe(String.format("Error reading file: %s", ex.toString()));
             retValue = false;
         }
         
@@ -85,7 +84,7 @@ public abstract class BaseXLSXReader {
         try {
             _stream.close();
         } catch (IOException ex) {
-            logger.error("Error closing stream", ex);
+            logger.severe(String.format("Error closing stream: %s", ex.toString()));
         }
         _stream = null;
     }
@@ -95,7 +94,7 @@ public abstract class BaseXLSXReader {
         try {
             _workBook = new XSSFWorkbook(_stream);
         } catch (IOException ex) {
-            logger.error("Error reading Excel", ex);
+            logger.severe(String.format("Error reading Excel: %s", ex.toString()));
             retValue = false;
         }
         return retValue;
@@ -108,7 +107,7 @@ public abstract class BaseXLSXReader {
         try {
             _workBook.close();
         } catch (IOException ex) {
-            logger.error("Error closing Excel", ex);
+            logger.severe(String.format("Error closing Excel: %s", ex.toString()));
         }
         _workBook = null;
     }

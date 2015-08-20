@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.company.codegenerator;
+package com.company.codegenerator.data;
 
 /**
  *
@@ -31,14 +31,29 @@ public class FieldMeta {
     public String toString(){
         StringBuilder builder = new StringBuilder();
         builder.append("{");
-        builder.append("FieldName:");
+        builder.append("\"");
+        builder.append("FieldName");
+        builder.append("\"");
+        builder.append(":");
+        builder.append("\"");
         builder.append(FieldName);
+        builder.append("\"");
         builder.append(",");
-        builder.append("FieldShortName:");
+        builder.append("\"");
+        builder.append("FieldShortName");
+        builder.append("\"");
+        builder.append(":");
+        builder.append("\"");
         builder.append(FieldShortName);
+        builder.append("\"");
         builder.append(",");
-        builder.append("DataType:");
+        builder.append("\"");
+        builder.append("DataType");
+        builder.append("\"");
+        builder.append(":");
+        builder.append("\"");
         builder.append(DataType.toString());
+        builder.append("\"");
         builder.append("}");
         
         return builder.toString();

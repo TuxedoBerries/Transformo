@@ -3,22 +3,22 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.company.codegenerator;
+package com.company.codegenerator.data;
 
 import java.util.HashMap;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.logging.Logger;
 
 /**
  *
  * @author Juan
  */
 public class FieldTypeTranslations {
-    private static final Logger logger = LogManager.getLogger(FieldTypeTranslations.class);
+    private static final Logger logger = Logger.getLogger("FieldTypeTranslations");
     private static final HashMap<String, FieldType> _cSharpTranslation = new HashMap<>();
+    private static final HashMap<FieldType, String> _cSharpTranslationBack = new HashMap<>();
     
     static {
-        // C# Translations
+        // C# Translations from String
         _cSharpTranslation.put(AllowedFieldType.BYTE, FieldType.CSHARP_BYTE);
         _cSharpTranslation.put(AllowedFieldType.SBYTE, FieldType.CSHARP_SBYTE);
         _cSharpTranslation.put(AllowedFieldType.INT, FieldType.CSHARP_INT);
@@ -33,6 +33,18 @@ public class FieldTypeTranslations {
         _cSharpTranslation.put(AllowedFieldType.BOOL, FieldType.CSHARP_BOOL);
         _cSharpTranslation.put(AllowedFieldType.STRING, FieldType.CSHARP_STRING);
         _cSharpTranslation.put(AllowedFieldType.DECIMAL, FieldType.CSHARP_DECIMAL);
+        
+        // C# Translations from Type
+        for(String name : _cSharpTranslation.keySet()){
+            _cSharpTranslationBack.put(_cSharpTranslation.get(name), name);
+        }
+    }
+    
+    public static String GetType(FieldType type){
+        if(_cSharpTranslationBack.containsKey(type))
+            return _cSharpTranslationBack.get(type);
+        
+        return "";
     }
     
     public static boolean ExistType(String type){
@@ -43,7 +55,7 @@ public class FieldTypeTranslations {
         if(_cSharpTranslation.containsKey(type))
             return _cSharpTranslation.get(type);
         
-        logger.warn("Returning NONE for type [{}]", type);
+        logger.warning(String.format("Returning NONE for type [%s]", type));
         return FieldType.NONE;
     }
 }

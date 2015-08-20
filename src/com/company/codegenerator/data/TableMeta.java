@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.company.codegenerator;
+package com.company.codegenerator.data;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,9 +46,18 @@ public class TableMeta {
     public String toString(){
         StringBuilder builder = new StringBuilder();
         builder.append("{");
-        builder.append("TableName:");
+        builder.append("\"");
+        builder.append("TableName");
+        builder.append("\"");
+        builder.append(":");
+        builder.append("\"");
         builder.append(TableName);
-        builder.append("TableName:");
+        builder.append("\"");
+        builder.append(",");
+        builder.append("\"");
+        builder.append("Fields");
+        builder.append("\"");
+        builder.append(":");
         builder.append("[");
         for(int i=0; i<Fields.size(); ++i){
             builder.append(Fields.get(i).toString());
