@@ -5,6 +5,7 @@
  */
 package com.company.codegenerator.generator;
 
+import com.company.codegenerator.template.TemplateReader;
 import com.company.codegenerator.data.FieldMeta;
 import com.company.codegenerator.data.FieldTypeTranslations;
 import com.company.codegenerator.data.TableMeta;
@@ -16,8 +17,8 @@ import java.util.logging.Logger;
  *
  * @author Juan
  */
-public class CSharpGenerator {
-    private static final Logger logger = Logger.getLogger("CSharpGenerator");
+public abstract class BaseGenerator {
+    private static final Logger logger = Logger.getLogger("BaseGenerator");
     
     // Date
     private static final String DATE_NOW = "date";
@@ -31,133 +32,107 @@ public class CSharpGenerator {
     // File
     private static final String FILE_TYPE = "file:";
     
-    private final TemplateReader _reader;
-    private final TemplateWriter _writer;
-    private TableMeta _meta;
-    private String _basePath;
+    /**
+     * Generate the specific filled template.
+     * @param template
+     * @return 
+     */
+    public abstract String Generate(String template);
     
-    public CSharpGenerator(){
-        _meta = null;
-        _basePath = "template.txt";
-        _reader = new TemplateReader(_basePath);
-        _writer = new TemplateWriter();
-    }
-    
-    public CSharpGenerator(TableMeta meta){
-        _meta = meta;
-        _basePath = "template.txt";
-        _reader = new TemplateReader(_basePath);
-        _writer = new TemplateWriter();
-    }
-    
-    public CSharpGenerator(TableMeta meta, String basePath){
-        _meta = meta;
-        _basePath = basePath;
-        _reader = new TemplateReader(_basePath);
-        _writer = new TemplateWriter();
-    }
-    
-    public void SetPath(String basePath){
-        _basePath = basePath;
-    }
-    
-    public void SetMeta(TableMeta meta){
-        _meta = meta;
-    }
-    
-    public void GenerateFiles(){
-        if(_meta == null){
-            logger.severe("Null Table Meta");
-            return;
-        }
-        
-        String template = _reader.ReadTemplate();
-        template = GenerateFile(template);
-        
-        _writer.WriteFile(Modifiers.ToClassCase(_meta.TableName)+".cs" , template);
-        logger.info(template);
-    }
-    
-    private String GenerateFile(String template){
+    /**
+     * Generate a filled file given the specific template and table meta
+     * @param template
+     * @param tmeta
+     * @return 
+     */
+    protected String GenerateFile(String template, TableMeta tmeta){
         String[] words = template.split("\\$*\\$");
         // Generate Fields
         StringBuilder builder = new StringBuilder();
         for(int i=0; i<words.length; ++i){
-            String replaced = DirectReplace(words[i]);
-            builder.append(GenerateFields(replaced));
+            String replaced = DirectReplace(words[i], tmeta);
+            builder.append(GenerateFields(replaced, tmeta));
         }
         return builder.toString();
     }
     
-    private String GenerateFields(String data){
+    /**
+     * Generates Fields if any given the specific template and table meta.
+     * @param data
+     * @param tmeta
+     * @return 
+     */
+    protected String GenerateFields(String data, TableMeta tmeta){
         String returnData = data;
         if(returnData.contains(FIELDS)){
             returnData = returnData.replace(FIELDS, "");
             String subset = "";
-            for(int i=0; i<_meta.Fields.size(); ++i){
-                subset += ReplaceFile(returnData, _meta.Fields.get(i));
+            for(int i=0; i<tmeta.Fields.size(); ++i){
+                subset += ReplaceFile(returnData, tmeta, tmeta.Fields.get(i));
             }
             returnData = subset; 
         }
         return returnData;
     }
     
-    private String GenerateData(String template){
+    protected String GenerateData(String template, TableMeta tmeta){
         String[] words = template.split("\\$*\\$");
         // Generate Fields
         StringBuilder builder = new StringBuilder();
         for(int i=0; i<words.length; ++i){
-            String replaced = DirectReplace(words[i]);
-            replaced = ReplaceFile(replaced);
-            builder.append(GenerateFields(replaced));
+            String replaced = DirectReplace(words[i], tmeta);
+            replaced = ReplaceFile(replaced, tmeta);
+            builder.append(GenerateFields(replaced, tmeta));
         }
         return builder.toString();
     }
     
-    private String GenerateData(String template, FieldMeta fmeta){
+    protected String GenerateData(String template, TableMeta tmeta, FieldMeta fmeta){
         String[] words = template.split("\\$*\\$");
         // Generate Fields
         StringBuilder builder = new StringBuilder();
         for(int i=0; i<words.length; ++i){
-            builder.append(DirectReplace(words[i], fmeta));
+            builder.append(DirectReplace(words[i], tmeta, fmeta));
         }
         return builder.toString();
     }
     
-    private String ReplaceFile(String data){
+    protected String ReplaceFile(String data, TableMeta tmeta){
         String returnData = data;
         if(returnData.contains(FILE_TYPE)){
             returnData = returnData.replace(FILE_TYPE, "");
-            returnData = _reader.ReadTemplate(returnData);
-            returnData = GenerateData(returnData);
+            TemplateReader reader = new TemplateReader();
+            returnData = reader.ReadTemplate(returnData);
+            returnData = GenerateData(returnData, tmeta);
         }
         
         return returnData;
     }
     
-    private String ReplaceFile(String data, FieldMeta fmeta){
+    protected String ReplaceFile(String data, TableMeta tmeta, FieldMeta fmeta){
         String returnData = data;
         if(returnData.contains(FILE_TYPE)){
             returnData = returnData.replace(FILE_TYPE, "");
-            returnData = _reader.ReadTemplate(returnData);
-            returnData = GenerateData(returnData, fmeta);
+            TemplateReader reader = new TemplateReader();
+            returnData = reader.ReadTemplate(returnData);
+            returnData = GenerateData(returnData, tmeta, fmeta);
         }
         
         return returnData;
     }
     
-    private String DirectReplace(String data){
+    protected String DirectReplace(String data, TableMeta meta){
         String returnData = data;
-        returnData = returnData.replace(TABLE_NAME, _meta.TableName);
+        returnData = returnData.replace(TABLE_NAME, meta.TableName);
         returnData = returnData.replace(DATE_NOW, GetDate());
         returnData = Modifiers.Apply(returnData);
         
         return returnData;
     }
     
-    private String DirectReplace(String data, FieldMeta fmeta){
+    protected String DirectReplace(String data, TableMeta meta, FieldMeta fmeta){
         String returnData = data;
-        returnData = returnData.replace(TABLE_NAME, _meta.TableName);
+        returnData = returnData.replace(TABLE_NAME, meta.TableName);
         returnData = returnData.replace(DATE_NOW, GetDate());
         returnData = returnData.replace(FIELD_NAME, fmeta.FieldName);
         returnData = returnData.replace(FIELD_SHORT_NAME, fmeta.FieldShortName);
@@ -167,7 +142,7 @@ public class CSharpGenerator {
         return returnData;
     }
     
-    private String GetDate(){
+    protected String GetDate(){
         Date date = new Date();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         return format.format(date);

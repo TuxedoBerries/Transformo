@@ -7,7 +7,8 @@ package databasegenerator;
 
 import com.company.codegenerator.data.TableMeta;
 import com.company.codegenerator.excel.XLSXTableMetaReader;
-import com.company.codegenerator.generator.CSharpGenerator;
+import com.company.codegenerator.generator.IdentityGenerator;
+import com.company.codegenerator.template.TemplateReader;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -27,10 +28,12 @@ public class DatabaseGenerator {
         XLSXTableMetaReader reader = new XLSXTableMetaReader(path);
         reader.Read();
         List<TableMeta> tables = reader.GetTables();
+        TemplateReader templateReader = new TemplateReader("template.txt");
+        String template = templateReader.ReadTemplate();
         for(int i=0; i<tables.size(); ++i){
             logger.info(tables.get(i).toString());
-            CSharpGenerator generator = new CSharpGenerator(tables.get(i));
-            generator.GenerateFiles();
+            IdentityGenerator generator = new IdentityGenerator(tables.get(i));
+            generator.Generate(template);
         }
     }
 }
