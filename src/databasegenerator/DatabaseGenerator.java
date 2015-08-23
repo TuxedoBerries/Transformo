@@ -5,9 +5,11 @@
  */
 package databasegenerator;
 
+import com.company.codegenerator.data.FieldMeta;
 import com.company.codegenerator.data.TableMeta;
 import com.company.codegenerator.excel.XLSXTableMetaReader;
 import com.company.codegenerator.generator.IdentityGenerator;
+import com.company.codegenerator.generator.FieldGenerator;
 import com.company.codegenerator.template.TemplateReader;
 import java.util.List;
 import java.util.logging.Logger;
@@ -29,11 +31,18 @@ public class DatabaseGenerator {
         reader.Read();
         List<TableMeta> tables = reader.GetTables();
         TemplateReader templateReader = new TemplateReader("template.txt");
+        TemplateReader interfaceTemplateReader = new TemplateReader("interface.txt");
         String template = templateReader.ReadTemplate();
+        String interfaceTemplate = interfaceTemplateReader.ReadTemplate();
         for(int i=0; i<tables.size(); ++i){
             logger.info(tables.get(i).toString());
-            IdentityGenerator generator = new IdentityGenerator(tables.get(i));
+            TableMeta tmeta = tables.get(i);
+            IdentityGenerator generator = new IdentityGenerator(tmeta);
             generator.Generate(template);
+            for(FieldMeta fmeta : tmeta.Fields){
+                FieldGenerator igenerator = new FieldGenerator(fmeta);
+                igenerator.Generate(interfaceTemplate);
+            }
         }
     }
 }

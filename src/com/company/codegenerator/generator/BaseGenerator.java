@@ -87,6 +87,18 @@ public abstract class BaseGenerator {
         return builder.toString();
     }
     
+    protected String GenerateData(String template, FieldMeta fmeta){
+        String[] words = template.split("\\$*\\$");
+        // Generate Fields
+        StringBuilder builder = new StringBuilder();
+        for(int i=0; i<words.length; ++i){
+            String replaced = DirectReplace(words[i], fmeta);
+            replaced = ReplaceFile(replaced, fmeta);
+            builder.append(replaced);
+        }
+        return builder.toString();
+    }
+    
     protected String GenerateData(String template, TableMeta tmeta, FieldMeta fmeta){
         String[] words = template.split("\\$*\\$");
         // Generate Fields
@@ -109,6 +121,18 @@ public abstract class BaseGenerator {
         return returnData;
     }
     
+    protected String ReplaceFile(String data, FieldMeta fmeta){
+        String returnData = data;
+        if(returnData.contains(FILE_TYPE)){
+            returnData = returnData.replace(FILE_TYPE, "");
+            TemplateReader reader = new TemplateReader();
+            returnData = reader.ReadTemplate(returnData);
+            returnData = GenerateData(returnData, fmeta);
+        }
+        
+        return returnData;
+    }
+    
     protected String ReplaceFile(String data, TableMeta tmeta, FieldMeta fmeta){
         String returnData = data;
         if(returnData.contains(FILE_TYPE)){
@@ -125,6 +149,17 @@ public abstract class BaseGenerator {
         String returnData = data;
         returnData = returnData.replace(TABLE_NAME, meta.TableName);
         returnData = returnData.replace(DATE_NOW, GetDate());
+        returnData = Modifiers.Apply(returnData);
+        
+        return returnData;
+    }
+    
+    protected String DirectReplace(String data, FieldMeta fmeta){
+        String returnData = data;
+        returnData = returnData.replace(DATE_NOW, GetDate());
+        returnData = returnData.replace(FIELD_NAME, fmeta.FieldName);
+        returnData = returnData.replace(FIELD_SHORT_NAME, fmeta.FieldShortName);
+        returnData = returnData.replace(FIELD_TYPE, FieldTypeTranslations.GetType(fmeta.DataType));
         returnData = Modifiers.Apply(returnData);
         
         return returnData;
