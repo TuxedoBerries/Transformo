@@ -1,5 +1,10 @@
+	/// <summary>
+	/// Gets the $field_name:class_case$ of this $table_name:capital_case$.
+	/// </summary>
+	/// <value>The $field_name:class_case$.</value>
 	public $field_type$ $field_name:class_case$ {
 		get {
 			return _$field_name:camel_case$;
 		}
 	}
+

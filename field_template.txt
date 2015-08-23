@@ -1,1 +1,4 @@
+	/// <summary>
+	/// The $field_name:capital_case$.
+	/// </summary>
 	private $field_type$ _$field_name:camel_case$;

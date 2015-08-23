@@ -8,6 +8,8 @@ package com.company.codegenerator.generator;
 import com.company.codegenerator.data.FieldMeta;
 import com.company.codegenerator.data.FieldTypeTranslations;
 import com.company.codegenerator.data.TableMeta;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.logging.Logger;
 
 /**
@@ -17,7 +19,9 @@ import java.util.logging.Logger;
 public class CSharpGenerator {
     private static final Logger logger = Logger.getLogger("CSharpGenerator");
     
-    // Replacement
+    // Date
+    private static final String DATE_NOW = "date";
+    // Table
     private static final String TABLE_NAME = "table_name";
     // Fields
     private static final String FIELDS = "fields:";
@@ -28,6 +32,7 @@ public class CSharpGenerator {
     private static final String FILE_TYPE = "file:";
     
     private final TemplateReader _reader;
+    private final TemplateWriter _writer;
     private TableMeta _meta;
     private String _basePath;
     
@@ -35,18 +40,21 @@ public class CSharpGenerator {
         _meta = null;
         _basePath = "template.txt";
         _reader = new TemplateReader(_basePath);
+        _writer = new TemplateWriter();
     }
     
     public CSharpGenerator(TableMeta meta){
         _meta = meta;
         _basePath = "template.txt";
         _reader = new TemplateReader(_basePath);
+        _writer = new TemplateWriter();
     }
     
     public CSharpGenerator(TableMeta meta, String basePath){
         _meta = meta;
         _basePath = basePath;
         _reader = new TemplateReader(_basePath);
+        _writer = new TemplateWriter();
     }
     
     public void SetPath(String basePath){
@@ -64,12 +72,13 @@ public class CSharpGenerator {
         }
         
         String template = _reader.ReadTemplate();
-        template = GenerateTable(template);
+        template = GenerateFile(template);
         
+        _writer.WriteFile(Modifiers.ToClassCase(_meta.TableName)+".cs" , template);
         logger.info(template);
     }
     
-    private String GenerateTable(String template){
+    private String GenerateFile(String template){
         String[] words = template.split("\\$*\\$");
         // Generate Fields
         StringBuilder builder = new StringBuilder();
@@ -140,6 +149,7 @@ public class CSharpGenerator {
     private String DirectReplace(String data){
         String returnData = data;
         returnData = returnData.replace(TABLE_NAME, _meta.TableName);
+        returnData = returnData.replace(DATE_NOW, GetDate());
         returnData = Modifiers.Apply(returnData);
         
         return returnData;
@@ -148,11 +158,18 @@ public class CSharpGenerator {
     private String DirectReplace(String data, FieldMeta fmeta){
         String returnData = data;
         returnData = returnData.replace(TABLE_NAME, _meta.TableName);
+        returnData = returnData.replace(DATE_NOW, GetDate());
         returnData = returnData.replace(FIELD_NAME, fmeta.FieldName);
         returnData = returnData.replace(FIELD_SHORT_NAME, fmeta.FieldShortName);
         returnData = returnData.replace(FIELD_TYPE, FieldTypeTranslations.GetType(fmeta.DataType));
         returnData = Modifiers.Apply(returnData);
         
         return returnData;
+    }
+    
+    private String GetDate(){
+        Date date = new Date();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        return format.format(date);
     }
 }
