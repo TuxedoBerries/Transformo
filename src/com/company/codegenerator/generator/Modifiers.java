@@ -19,16 +19,16 @@ public class Modifiers {
     private static final String SNEAK_CASE = ":sneak_case";
     private static final String CLASS_CASE = ":class_case";
     private static final String UNDERSCORE_SPACE = ":underscore_space";
-    private static final String CLEAN_COMMA = ":clean_comma";
+    private static final String CLEAN_COMMA = ":clean";
     
     public static String Apply(String src, int current, int total){
         String returnData = src;
         
         if(returnData.contains(CLEAN_COMMA)){
             if(current+1 < total){
-                returnData = returnData.replace(CLEAN_COMMA, ",");
-            }else{
                 returnData = returnData.replace(CLEAN_COMMA, "");
+            }else{
+                returnData = "";
             }
             return returnData;
         }

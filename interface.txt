@@ -2,7 +2,7 @@
 /// <summary>
 /// Automatic Generated Interface - $field_name:capital_case$
 /// Please do not modify
-/// Date: $date$
+/// Date: $@date$
 /// <summary>
 ///--------------------------------------------
 

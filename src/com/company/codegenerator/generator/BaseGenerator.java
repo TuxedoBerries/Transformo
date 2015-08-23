@@ -21,7 +21,7 @@ public abstract class BaseGenerator {
     private static final Logger logger = Logger.getLogger("BaseGenerator");
     
     // Date
-    private static final String DATE_NOW = "date";
+    private static final String DATE_NOW = "@date";
     // Table
     private static final String TABLE_NAME = "table_name";
     // Fields
