@@ -26,12 +26,6 @@ public class CSharpGenerator {
     private static final String FIELD_TYPE = "field_type";
     // File
     private static final String FILE_TYPE = "file:";
-    // Modifiers
-    private static final String CAPITAL_CASE = ":capital_case";
-    private static final String LOWER_CASE = ":lower_case";
-    private static final String CAMEL_CASE = ":camel_case";
-    private static final String SNEAK_CASE = ":sneak_case";
-    
     
     private final TemplateReader _reader;
     private TableMeta _meta;
@@ -86,18 +80,6 @@ public class CSharpGenerator {
         return builder.toString();
     }
     
-    private String GenerateData(String template){
-        String[] words = template.split("\\$*\\$");
-        // Generate Fields
-        StringBuilder builder = new StringBuilder();
-        for(int i=0; i<words.length; ++i){
-            String replaced = DirectReplace(words[i]);
-            replaced = ReplaceFile(replaced);
-            builder.append(GenerateFields(replaced));
-        }
-        return builder.toString();
-    }
-    
     private String GenerateFields(String data){
         String returnData = data;
         if(returnData.contains(FIELDS)){
@@ -109,6 +91,18 @@ public class CSharpGenerator {
             returnData = subset; 
         }
         return returnData;
+    }
+    
+    private String GenerateData(String template){
+        String[] words = template.split("\\$*\\$");
+        // Generate Fields
+        StringBuilder builder = new StringBuilder();
+        for(int i=0; i<words.length; ++i){
+            String replaced = DirectReplace(words[i]);
+            replaced = ReplaceFile(replaced);
+            builder.append(GenerateFields(replaced));
+        }
+        return builder.toString();
     }
     
     private String GenerateData(String template, FieldMeta fmeta){
@@ -146,7 +140,7 @@ public class CSharpGenerator {
     private String DirectReplace(String data){
         String returnData = data;
         returnData = returnData.replace(TABLE_NAME, _meta.TableName);
-        returnData = ApplyModifiers(returnData);
+        returnData = Modifiers.Apply(returnData);
         
         return returnData;
     }
@@ -157,65 +151,8 @@ public class CSharpGenerator {
         returnData = returnData.replace(FIELD_NAME, fmeta.FieldName);
         returnData = returnData.replace(FIELD_SHORT_NAME, fmeta.FieldShortName);
         returnData = returnData.replace(FIELD_TYPE, FieldTypeTranslations.GetType(fmeta.DataType));
-        returnData = ApplyModifiers(returnData);
+        returnData = Modifiers.Apply(returnData);
         
         return returnData;
-    }
-    
-    private String ApplyModifiers(String data){
-        String returnData = data;
-        
-        if(returnData.contains(CAPITAL_CASE)){
-            returnData = returnData.replace(CAPITAL_CASE, "");
-            returnData = returnData.substring(0, 1).toUpperCase() + returnData.substring(1).toLowerCase();
-        }
-        
-        if(returnData.contains(LOWER_CASE)){
-            returnData = returnData.replace(LOWER_CASE, "");
-            returnData = returnData.toLowerCase();
-        }
-        
-        if(returnData.contains(CAMEL_CASE)){
-            returnData = returnData.replace(CAMEL_CASE, "");
-            returnData = ToCamelCase(returnData);
-        }
-        
-        if(returnData.contains(SNEAK_CASE)){
-            returnData = returnData.replace(SNEAK_CASE, "");
-            returnData = ToSneakCase(returnData);
-        }
-        
-        return returnData;
-    }
-    
-    private String ToSneakCase(String data){
-        StringBuilder builder = new StringBuilder();
-        for(int i=0; i<data.length(); ++i){
-            char c = data.charAt(i);
-            if(i == 0){
-                builder.append( Character.toLowerCase(c) );
-            }else{
-                if(Character.isUpperCase(c)){
-                    builder.append( "_" );
-                }
-                builder.append( Character.toLowerCase(c) );
-            }
-        }
-        return builder.toString();
-    }
-    
-    private String ToCamelCase(String data){
-        String[] split = data.split("_");
-        StringBuilder builder = new StringBuilder();
-        for(int i=0; i<split.length; ++i){
-            String work = split[i].toLowerCase();
-            if(i == 0){
-                builder.append(work);
-            }else{
-                builder.append(work.substring(0, 1).toUpperCase().concat( work.substring(1).toLowerCase() ));
-            }
-        }
-        
-        return builder.toString();
     }
 }

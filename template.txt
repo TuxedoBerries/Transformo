@@ -1,9 +1,18 @@
 
-public class $table_name:capital_case$ {
+public class $table_name:class_case$ {
+	// Example of Modifiers
+	// Camel Case: $table_name:camel_case$
+	// Sneak Case: $table_name:sneak_case$
+	// Class Case: $table_name:class_case$
+	// Capital Case: $table_name:capital_case$
+	// Sentence Case: $table_name:sentence_case$
+	// Lower Case: $table_name:lower_case$
+	// Upper Case: $table_name:upper_case$
+	// Underscore Space: $table_name:underscore_space$
 	
 $fields:file:field_template.txt$
 	
-	public $table_name$()
+	public $table_name:class_case$()
 	{
 $fields:file:field_assignation.txt$
 	}

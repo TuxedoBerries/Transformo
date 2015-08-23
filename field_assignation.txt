@@ -1,1 +1,1 @@
-		_$field_name:lower_case$ = data["$field_name:lower_case$"];
+		_$field_name:camel_case$ = data["$field_name:sneak_case$"];
