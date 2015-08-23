@@ -23,7 +23,7 @@ public class FieldGenerator extends BaseGenerator {
 
     @Override
     public String Generate(String template) {
-        String result = GenerateData(template, _fmeta);
+        String result = GenerateData(template, _fmeta, 0, 0);
         logger.info(result);
         return result;
     }

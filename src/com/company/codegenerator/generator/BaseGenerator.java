@@ -47,7 +47,6 @@ public abstract class BaseGenerator {
      */
     protected String GenerateFile(String template, TableMeta tmeta){
         String[] words = template.split("\\$*\\$");
-        // Generate Fields
         StringBuilder builder = new StringBuilder();
         for(int i=0; i<words.length; ++i){
             String replaced = DirectReplace(words[i], tmeta);
@@ -68,7 +67,7 @@ public abstract class BaseGenerator {
             returnData = returnData.replace(FIELDS, "");
             String subset = "";
             for(int i=0; i<tmeta.Fields.size(); ++i){
-                subset += ReplaceFile(returnData, tmeta, tmeta.Fields.get(i));
+                subset += ReplaceFile(returnData, tmeta, tmeta.Fields.get(i), i, tmeta.Fields.size());
             }
             returnData = subset; 
         }
@@ -87,24 +86,24 @@ public abstract class BaseGenerator {
         return builder.toString();
     }
     
-    protected String GenerateData(String template, FieldMeta fmeta){
+    protected String GenerateData(String template, FieldMeta fmeta, int current, int total){
         String[] words = template.split("\\$*\\$");
         // Generate Fields
         StringBuilder builder = new StringBuilder();
         for(int i=0; i<words.length; ++i){
-            String replaced = DirectReplace(words[i], fmeta);
-            replaced = ReplaceFile(replaced, fmeta);
+            String replaced = DirectReplace(words[i], fmeta, current, total);
+            replaced = ReplaceFile(replaced, fmeta, current, total);
             builder.append(replaced);
         }
         return builder.toString();
     }
     
-    protected String GenerateData(String template, TableMeta tmeta, FieldMeta fmeta){
+    protected String GenerateData(String template, TableMeta tmeta, FieldMeta fmeta, int current, int total){
         String[] words = template.split("\\$*\\$");
         // Generate Fields
         StringBuilder builder = new StringBuilder();
         for(int i=0; i<words.length; ++i){
-            builder.append(DirectReplace(words[i], tmeta, fmeta));
+            builder.append(DirectReplace(words[i], tmeta, fmeta, current, total));
         }
         return builder.toString();
     }
@@ -121,25 +120,25 @@ public abstract class BaseGenerator {
         return returnData;
     }
     
-    protected String ReplaceFile(String data, FieldMeta fmeta){
+    protected String ReplaceFile(String data, FieldMeta fmeta, int current, int total){
         String returnData = data;
         if(returnData.contains(FILE_TYPE)){
             returnData = returnData.replace(FILE_TYPE, "");
             TemplateReader reader = new TemplateReader();
             returnData = reader.ReadTemplate(returnData);
-            returnData = GenerateData(returnData, fmeta);
+            returnData = GenerateData(returnData, fmeta, current, total);
         }
         
         return returnData;
     }
     
-    protected String ReplaceFile(String data, TableMeta tmeta, FieldMeta fmeta){
+    protected String ReplaceFile(String data, TableMeta tmeta, FieldMeta fmeta, int current, int total){
         String returnData = data;
         if(returnData.contains(FILE_TYPE)){
             returnData = returnData.replace(FILE_TYPE, "");
             TemplateReader reader = new TemplateReader();
             returnData = reader.ReadTemplate(returnData);
-            returnData = GenerateData(returnData, tmeta, fmeta);
+            returnData = GenerateData(returnData, tmeta, fmeta, current, total);
         }
         
         return returnData;
@@ -154,18 +153,19 @@ public abstract class BaseGenerator {
         return returnData;
     }
     
-    protected String DirectReplace(String data, FieldMeta fmeta){
+    protected String DirectReplace(String data, FieldMeta fmeta, int current, int total){
         String returnData = data;
         returnData = returnData.replace(DATE_NOW, GetDate());
         returnData = returnData.replace(FIELD_NAME, fmeta.FieldName);
         returnData = returnData.replace(FIELD_SHORT_NAME, fmeta.FieldShortName);
         returnData = returnData.replace(FIELD_TYPE, FieldTypeTranslations.GetType(fmeta.DataType));
         returnData = Modifiers.Apply(returnData);
+        returnData = Modifiers.Apply(returnData, current, total);
         
         return returnData;
     }
     
-    protected String DirectReplace(String data, TableMeta meta, FieldMeta fmeta){
+    protected String DirectReplace(String data, TableMeta meta, FieldMeta fmeta, int current, int total){
         String returnData = data;
         returnData = returnData.replace(TABLE_NAME, meta.TableName);
         returnData = returnData.replace(DATE_NOW, GetDate());
@@ -173,6 +173,7 @@ public abstract class BaseGenerator {
         returnData = returnData.replace(FIELD_SHORT_NAME, fmeta.FieldShortName);
         returnData = returnData.replace(FIELD_TYPE, FieldTypeTranslations.GetType(fmeta.DataType));
         returnData = Modifiers.Apply(returnData);
+        returnData = Modifiers.Apply(returnData, current, total);
         
         return returnData;
     }

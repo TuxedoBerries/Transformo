@@ -10,6 +10,8 @@ package com.company.codegenerator.data;
  * @author Juan
  */
 public class AllowedFieldType {
+    
+    // C# Types
     public static final String BYTE = "byte";
     public static final String SBYTE = "sbyte";
     public static final String INT = "int";

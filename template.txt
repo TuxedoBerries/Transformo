@@ -5,7 +5,9 @@
 /// Date: $date$
 /// <summary>
 ///--------------------------------------------
-public partial class $table_name:class_case$ {
+public partial class $table_name:class_case$ :
+$fields:file:interface_implementation_template.txt$
+{
 	
 $fields:file:field_template.txt$
 
