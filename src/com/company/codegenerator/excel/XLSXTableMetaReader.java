@@ -22,7 +22,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
  */
 public class XLSXTableMetaReader extends BaseXLSXReader {
     
-    public static final int ROW_META_COUNT = 3;
+    public static final int ROW_META_COUNT = 2;
     private static final Logger logger = Logger.getLogger("XLSXTableMetaReader");
     private final List<TableMeta> _tableMetas;
     
@@ -42,6 +42,8 @@ public class XLSXTableMetaReader extends BaseXLSXReader {
     
     @Override
     protected void doRead() {
+        _tableMetas.clear();
+        
         int totalCount = _workBook.getNumberOfSheets();
         for(int i=0; i<totalCount; ++i){
             TableMeta meta = GenerateTableMeta( _workBook.getSheetAt(i) );
@@ -59,7 +61,7 @@ public class XLSXTableMetaReader extends BaseXLSXReader {
     private TableMeta GenerateTableMeta(XSSFSheet sheet){
         int totalRows = sheet.getLastRowNum();
         if(totalRows < ROW_META_COUNT){
-            logger.warning(String.format("Total number of rows is too small [%d]", totalRows));
+            logger.warning(String.format("Total number of rows less than expected [%d]. %d Rows are expected", totalRows, ROW_META_COUNT));
             return null;
         }
         
@@ -81,7 +83,7 @@ public class XLSXTableMetaReader extends BaseXLSXReader {
             if(cell.getCellType()== Cell.CELL_TYPE_STRING){
                 fmeta.FieldName = cell.getStringCellValue();
             }else{
-                logger.severe(String.format("Wrong Cell Type [%s]", cell.getCellType()));
+                logger.severe(String.format("Bad Cell Type [%s]. String is expected.", cell.getCellType()));
             }
         }
     }
@@ -94,7 +96,7 @@ public class XLSXTableMetaReader extends BaseXLSXReader {
             if(cell.getCellType()== Cell.CELL_TYPE_STRING){
                 fmeta.FieldShortName = cell.getStringCellValue();
             }else{
-                logger.severe(String.format("Wrong Cell Type [%s]", cell.getCellType()));
+                logger.severe(String.format("Bad Cell Type [%s]. String is expected.", cell.getCellType()));
             }
         }
     }
@@ -103,18 +105,19 @@ public class XLSXTableMetaReader extends BaseXLSXReader {
         int total = row.getLastCellNum();
         for(int i=0; i<total; ++i){
             FieldMeta fmeta = tmeta.GetOrCreateField(i);
+            fmeta.FieldIndex = i;
             Cell cell = row.getCell(i);
             if(cell.getCellType()== Cell.CELL_TYPE_STRING){
                 SetDataType(cell, fmeta);
             }else{
-                logger.severe(String.format("Wrong Cell Type [%s]", cell.getCellType()));
+                logger.severe(String.format("Bad Cell Type [%s]. String is expected.", cell.getCellType()));
             }
         }
     }
     
     private void SetDataType(Cell cell, FieldMeta fmeta){
         if(cell.getCellType() != Cell.CELL_TYPE_STRING){
-            logger.severe(String.format("Wrong Cell Type [%s]", cell.getCellType()));
+            logger.severe(String.format("Bad Cell Type [%s]. String is expected.", cell.getCellType()));
             return;
         }
         

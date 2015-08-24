@@ -6,7 +6,9 @@
 package databasegenerator;
 
 import com.company.codegenerator.data.FieldMeta;
+import com.company.codegenerator.data.RowData;
 import com.company.codegenerator.data.TableMeta;
+import com.company.codegenerator.excel.XLSXDataReader;
 import com.company.codegenerator.excel.XLSXTableMetaReader;
 import com.company.codegenerator.generator.EntityGenerator;
 import com.company.codegenerator.generator.FieldGenerator;
@@ -21,19 +23,41 @@ import java.util.logging.Logger;
 public class DatabaseGenerator {
 
     private static final Logger logger = Logger.getLogger("DatabaseGenerator");
+    private static final String BASE_PATH = "Database.xlsx";
+    
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args){
-        String path = "Database.xlsx";
-        
-        XLSXTableMetaReader reader = new XLSXTableMetaReader(path);
+        //GenerateTemplates();
+        GenerateData();
+    }
+    
+    public static void GenerateData(){
+        XLSXTableMetaReader reader = new XLSXTableMetaReader(BASE_PATH);
         reader.Read();
         List<TableMeta> tables = reader.GetTables();
-        TemplateReader templateReader = new TemplateReader("template.txt");
-        TemplateReader interfaceTemplateReader = new TemplateReader("interface.txt");
-        String template = templateReader.ReadTemplate();
-        String interfaceTemplate = interfaceTemplateReader.ReadTemplate();
+        
+        for(int i=0; i<tables.size(); ++i){
+            TableMeta tmeta = tables.get(i);
+            XLSXDataReader dataReader = new XLSXDataReader(BASE_PATH, tmeta);
+            dataReader.Read();
+            
+            List<RowData> list = dataReader.GetData();
+            for(int r=0; r<list.size(); ++r){
+                RowData rdata = list.get(r);
+                logger.info(rdata.toString());
+            }
+        }
+    }
+    
+    public static void GenerateTemplates(){
+        XLSXTableMetaReader reader = new XLSXTableMetaReader(BASE_PATH);
+        reader.Read();
+        List<TableMeta> tables = reader.GetTables();
+        
+        String template = GetTemplate("template.txt");
+        String interfaceTemplate = GetTemplate("interface.txt");
         for(int i=0; i<tables.size(); ++i){
             logger.info(tables.get(i).toString());
             TableMeta tmeta = tables.get(i);
@@ -44,5 +68,10 @@ public class DatabaseGenerator {
                 igenerator.Generate(interfaceTemplate);
             }
         }
+    }
+    
+    public static String GetTemplate(String path){
+        TemplateReader templateReader = new TemplateReader(path);
+        return templateReader.ReadTemplate();
     }
 }

@@ -26,6 +26,11 @@ public class FieldMeta {
      */
     public FieldType DataType;
     
+    /**
+     * Index of the Field
+     */
+    public int FieldIndex;
+    
     
     @Override
     public String toString(){

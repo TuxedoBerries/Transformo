@@ -40,6 +40,44 @@ public class FieldTypeTranslations {
         }
     }
     
+    public static boolean isNumeric(FieldType type){
+        switch(type){
+            case CSHARP_BYTE:
+            case CSHARP_SBYTE:
+            case CSHARP_SHORT:
+            case CSHARP_USHORT:
+            case CSHARP_INT:
+            case CSHARP_UINT:
+            case CSHARP_LONG:
+            case CSHARP_ULONG:
+            case CSHARP_FLOAT:
+            case CSHARP_DOUBLE:
+            case CSHARP_DECIMAL:
+                return true;
+        }
+        
+        return false;
+    }
+    
+    public static boolean isText(FieldType type){
+        switch(type){
+            case CSHARP_CHAR:
+            case CSHARP_STRING:
+                return true;
+        }
+        
+        return false;
+    }
+    
+    public static boolean isBoolean(FieldType type){
+        switch(type){
+            case CSHARP_BOOL:
+                return true;
+        }
+        
+        return false;
+    }
+    
     public static String GetType(FieldType type){
         if(_cSharpTranslationBack.containsKey(type))
             return _cSharpTranslationBack.get(type);

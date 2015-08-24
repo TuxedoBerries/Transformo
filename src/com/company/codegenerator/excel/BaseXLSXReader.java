@@ -41,7 +41,7 @@ public abstract class BaseXLSXReader {
         try {
             doRead();
         } catch (Exception ex) {
-            logger.severe("Error Reading File");
+            logger.severe(String.format("Error Reading File: %s", ex.toString()));
         }
         
         CloseWorkbook();

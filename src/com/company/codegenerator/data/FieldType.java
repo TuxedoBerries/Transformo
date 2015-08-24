@@ -26,5 +26,5 @@ public enum FieldType {
     CSHARP_CHAR,
     CSHARP_BOOL,
     CSHARP_STRING,
-    CSHARP_DECIMAL,
+    CSHARP_DECIMAL
 }
