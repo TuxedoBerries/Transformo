@@ -12,12 +12,12 @@ import java.util.logging.Logger;
  *
  * @author Juan
  */
-public class IdentityGenerator extends BaseGenerator {
+public class EntityGenerator extends BaseGenerator {
     private static final Logger logger = Logger.getLogger("IdentityGenerator");
     
     private TableMeta _meta;
     
-    public IdentityGenerator(TableMeta tmeta){
+    public EntityGenerator(TableMeta tmeta){
         super();
         _meta = tmeta;
     }

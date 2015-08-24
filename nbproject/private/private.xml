@@ -3,10 +3,7 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/Workspace/GameProject/DataBase/DatabaseGenerator/src/com/company/codegenerator/generator/CSharpGenerator.java</file>
-            <file>file:/D:/Workspace/GameProject/DataBase/DatabaseGenerator/src/com/company/codegenerator/generator/TemplateReader.java</file>
-            <file>file:/D:/Workspace/GameProject/DataBase/DatabaseGenerator/src/com/company/codegenerator/excel/XLSXTableMetaReader.java</file>
-            <file>file:/D:/Workspace/GameProject/DataBase/DatabaseGenerator/src/com/company/codegenerator/data/FieldTypeTranslations.java</file>
+            <file>file:/D:/Workspace/GameProject/DataBase/DatabaseGenerator/src/databasegenerator/DatabaseGenerator.java</file>
         </group>
     </open-files>
 </project-private>
