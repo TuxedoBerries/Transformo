@@ -8,7 +8,6 @@ package org.juanssl.transformo.excel;
 import org.juanssl.transformo.data.FieldMeta;
 import org.juanssl.transformo.data.RowData;
 import org.juanssl.transformo.data.TableMeta;
-import static org.juanssl.transformo.excel.XLSXTableMetaReader.ROW_META_COUNT;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;

@@ -15,6 +15,7 @@ import org.juanssl.transformo.generator.FieldGenerator;
 import org.juanssl.transformo.template.TemplateReader;
 import java.util.List;
 import java.util.logging.Logger;
+import org.juanssl.transformo.template.TemplateWriter;
 
 /**
  *
@@ -29,8 +30,8 @@ public class DatabaseGenerator {
      * @param args the command line arguments
      */
     public static void main(String[] args){
-        //GenerateTemplates();
-        GenerateData();
+        GenerateMeta();
+        //GenerateData();
     }
     
     public static void GenerateData(){
@@ -51,27 +52,45 @@ public class DatabaseGenerator {
         }
     }
     
-    public static void GenerateTemplates(){
+    public static void GenerateMeta(){
         XLSXTableMetaReader reader = new XLSXTableMetaReader(BASE_PATH);
         reader.Read();
         List<TableMeta> tables = reader.GetTables();
         
-        String template = GetTemplate("template.txt");
-        String interfaceTemplate = GetTemplate("interface.txt");
+        GenerateModelTemplates(tables);
+        GenerateInterfaceTemplates(tables);
+    }
+    
+    public static void GenerateModelTemplates(List<TableMeta> tables){
+        TemplateReader templateReader = new TemplateReader("template.txt", "Templates/C#-Models/");
+        String template = templateReader.ReadTemplate();
         for(int i=0; i<tables.size(); ++i){
-            logger.info(tables.get(i).toString());
             TableMeta tmeta = tables.get(i);
             EntityGenerator generator = new EntityGenerator(tmeta);
-            generator.Generate(template);
+            generator.SetTemplateReader(templateReader);
+            String fileData = generator.Generate(template);
+            String fileName = generator.Generate("Generated/Models/$table_name:class_case$.cs");
+            WriteFilledTemplate(fileName, fileData);
+        }
+    }
+    
+    public static void GenerateInterfaceTemplates(List<TableMeta> tables){
+        TemplateReader templateReader = new TemplateReader("template.txt", "Templates/C#-Interfaces/");
+        String interfaceTemplate = templateReader.ReadTemplate();
+        for(int i=0; i<tables.size(); ++i){
+            TableMeta tmeta = tables.get(i);
             for(FieldMeta fmeta : tmeta.Fields){
                 FieldGenerator igenerator = new FieldGenerator(fmeta);
-                igenerator.Generate(interfaceTemplate);
+                igenerator.SetTemplateReader(templateReader);
+                String fileData = igenerator.Generate(interfaceTemplate);
+                String fileName = igenerator.Generate("Generated/Interfaces/I$field_name:class_case$.cs");
+                WriteFilledTemplate(fileName, fileData);
             }
         }
     }
     
-    public static String GetTemplate(String path){
-        TemplateReader templateReader = new TemplateReader(path);
-        return templateReader.ReadTemplate();
+    public static void WriteFilledTemplate(String path, String data){
+        TemplateWriter templateWriter = new TemplateWriter();
+        templateWriter.WriteFile(path, data);
     }
 }

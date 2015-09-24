@@ -31,6 +31,8 @@ public abstract class BaseGenerator {
     private static final String FIELD_TYPE = "field_type";
     // File
     private static final String FILE_TYPE = "file:";
+    // Template Reader
+    private TemplateReader _mainReader;
     
     /**
      * Generate the specific filled template.
@@ -38,6 +40,15 @@ public abstract class BaseGenerator {
      * @return 
      */
     public abstract String Generate(String template);
+    
+    /**
+     * Sets the Template Reader for this Generator.
+     * If not set, one will be created.
+     * @param reader 
+     */
+    public void SetTemplateReader(TemplateReader reader){
+        _mainReader = reader;
+    }
     
     /**
      * Generate a filled file given the specific template and table meta
@@ -112,7 +123,8 @@ public abstract class BaseGenerator {
         String returnData = data;
         if(returnData.contains(FILE_TYPE)){
             returnData = returnData.replace(FILE_TYPE, "");
-            TemplateReader reader = new TemplateReader();
+            
+            TemplateReader reader = GetTemplateReader();
             returnData = reader.ReadTemplate(returnData);
             returnData = GenerateData(returnData, tmeta);
         }
@@ -124,7 +136,8 @@ public abstract class BaseGenerator {
         String returnData = data;
         if(returnData.contains(FILE_TYPE)){
             returnData = returnData.replace(FILE_TYPE, "");
-            TemplateReader reader = new TemplateReader();
+            
+            TemplateReader reader = GetTemplateReader();
             returnData = reader.ReadTemplate(returnData);
             returnData = GenerateData(returnData, fmeta, current, total);
         }
@@ -136,7 +149,8 @@ public abstract class BaseGenerator {
         String returnData = data;
         if(returnData.contains(FILE_TYPE)){
             returnData = returnData.replace(FILE_TYPE, "");
-            TemplateReader reader = new TemplateReader();
+            
+            TemplateReader reader = GetTemplateReader();
             returnData = reader.ReadTemplate(returnData);
             returnData = GenerateData(returnData, tmeta, fmeta, current, total);
         }
@@ -182,5 +196,16 @@ public abstract class BaseGenerator {
         Date date = new Date();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         return format.format(date);
+    }
+    
+    /**
+     * Gets a Template Reader ready to read any template given.
+     * @return 
+     */
+    private TemplateReader GetTemplateReader(){
+        if(_mainReader == null)
+            _mainReader = new TemplateReader();
+        
+        return _mainReader;
     }
 }

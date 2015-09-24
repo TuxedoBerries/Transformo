@@ -2,13 +2,13 @@
 /// <summary>
 /// Automatic Generated Class - $table_name:capital_case$
 /// Please do not modify
-/// Date: $date$
+/// Date: $@date$
 /// <summary>
 ///--------------------------------------------
 public partial class $table_name:class_case$ :
 $fields:file:interface_implementation_template.txt$
 {
-	
+
 $fields:file:field_template.txt$
 
 	/// <summary>
@@ -18,6 +18,9 @@ $fields:file:field_template.txt$
 	{
 $fields:file:field_assignation.txt$
 	}
-	
+
+	#region Getters
 $fields:file:field_getters.txt$
+	#endregion
+
 }

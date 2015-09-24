@@ -48,13 +48,25 @@ public class TemplateWriter {
         _file = new File(path);
         if(_file.exists()){
             logger.warning("File already exit. Overwriting file.");
-        }else{
-            try {
-                _file.createNewFile();
-            } catch (IOException ex) {
-                logger.severe(String.format("Could not create file[%s]: %s", path, ex.toString()));
+            return true;
+        }
+        
+        // Create Folder if does not exist
+        File folder = _file.getParentFile();
+        if(!folder.exists()){
+            boolean result = folder.mkdirs();
+            if(!result){
+                logger.warning("Could not create parent folder");
                 return false;
             }
+        }
+        
+        // Create File
+        try {
+            _file.createNewFile();
+        } catch (IOException ex) {
+            logger.severe(String.format("Could not create file[%s]: %s", path, ex.toString()));
+            return false;
         }
         
         return true;
