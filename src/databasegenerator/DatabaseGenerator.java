@@ -62,7 +62,7 @@ public class DatabaseGenerator {
     }
     
     public static void GenerateModelTemplates(List<TableMeta> tables){
-        TemplateReader templateReader = new TemplateReader("template.txt", "Templates/C#-Models/");
+        TemplateReader templateReader = new TemplateReader("template.txt", "Templates/CSharp-Models/");
         String template = templateReader.ReadTemplate();
         for(int i=0; i<tables.size(); ++i){
             TableMeta tmeta = tables.get(i);
@@ -75,7 +75,7 @@ public class DatabaseGenerator {
     }
     
     public static void GenerateInterfaceTemplates(List<TableMeta> tables){
-        TemplateReader templateReader = new TemplateReader("template.txt", "Templates/C#-Interfaces/");
+        TemplateReader templateReader = new TemplateReader("template.txt", "Templates/CSharp-Interfaces/");
         String interfaceTemplate = templateReader.ReadTemplate();
         for(int i=0; i<tables.size(); ++i){
             TableMeta tmeta = tables.get(i);
