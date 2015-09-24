@@ -3,27 +3,30 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.company.codegenerator.generator;
+package org.juanssl.transformo.generator;
 
-import com.company.codegenerator.data.FieldMeta;
+import org.juanssl.transformo.data.TableMeta;
 import java.util.logging.Logger;
 
 /**
  *
  * @author Juan
  */
-public class FieldGenerator extends BaseGenerator {
+public class EntityGenerator extends BaseGenerator {
     private static final Logger logger = Logger.getLogger("IdentityGenerator");
-    private FieldMeta _fmeta;
     
-    public FieldGenerator(FieldMeta field){
+    private TableMeta _meta;
+    
+    public EntityGenerator(TableMeta tmeta){
         super();
-        _fmeta = field;
+        _meta = tmeta;
     }
-
+    
     @Override
-    public String Generate(String template) {
-        String result = GenerateData(template, _fmeta, 0, 0);
+    public String Generate(String template){
+        String result = template;
+        result = GenerateFile(result, _meta);
+        
         logger.info(result);
         return result;
     }

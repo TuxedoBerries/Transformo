@@ -5,14 +5,14 @@
  */
 package databasegenerator;
 
-import com.company.codegenerator.data.FieldMeta;
-import com.company.codegenerator.data.RowData;
-import com.company.codegenerator.data.TableMeta;
-import com.company.codegenerator.excel.XLSXDataReader;
-import com.company.codegenerator.excel.XLSXTableMetaReader;
-import com.company.codegenerator.generator.EntityGenerator;
-import com.company.codegenerator.generator.FieldGenerator;
-import com.company.codegenerator.template.TemplateReader;
+import org.juanssl.transformo.data.FieldMeta;
+import org.juanssl.transformo.data.RowData;
+import org.juanssl.transformo.data.TableMeta;
+import org.juanssl.transformo.excel.XLSXDataReader;
+import org.juanssl.transformo.excel.XLSXTableMetaReader;
+import org.juanssl.transformo.generator.EntityGenerator;
+import org.juanssl.transformo.generator.FieldGenerator;
+import org.juanssl.transformo.template.TemplateReader;
 import java.util.List;
 import java.util.logging.Logger;
 

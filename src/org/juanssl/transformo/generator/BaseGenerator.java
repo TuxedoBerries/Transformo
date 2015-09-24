@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.company.codegenerator.generator;
+package org.juanssl.transformo.generator;
 
-import com.company.codegenerator.template.TemplateReader;
-import com.company.codegenerator.data.FieldMeta;
-import com.company.codegenerator.data.FieldTypeTranslations;
-import com.company.codegenerator.data.TableMeta;
+import org.juanssl.transformo.template.TemplateReader;
+import org.juanssl.transformo.data.FieldMeta;
+import org.juanssl.transformo.data.FieldTypeTranslations;
+import org.juanssl.transformo.data.TableMeta;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Logger;

@@ -3,11 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.company.codegenerator.excel;
+package org.juanssl.transformo.excel;
 
-import com.company.codegenerator.data.TableMeta;
-import com.company.codegenerator.data.FieldMeta;
-import com.company.codegenerator.data.FieldTypeTranslations;
+import org.juanssl.transformo.data.TableMeta;
+import org.juanssl.transformo.data.FieldMeta;
+import org.juanssl.transformo.data.FieldTypeTranslations;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
