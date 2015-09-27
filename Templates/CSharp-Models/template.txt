@@ -16,6 +16,11 @@ $fields:file:field_template.txt$
 	/// </summary>
 	public $table_name:class_case$()
 	{
+		// Empty Constructor
+	}
+
+	public $table_name:class_case$(JsonData data)
+	{
 $fields:file:field_assignation.txt$
 	}
 

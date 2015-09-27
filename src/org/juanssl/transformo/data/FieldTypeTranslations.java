@@ -1,19 +1,29 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2015 Juan Silva <juanssl@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.juanssl.transformo.data;
 
 import java.util.HashMap;
-import java.util.logging.Logger;
+import org.juanssl.transformo.app.Logger;
 
 /**
  *
  * @author Juan
  */
 public class FieldTypeTranslations {
-    private static final Logger logger = Logger.getLogger("FieldTypeTranslations");
     private static final HashMap<String, FieldType> _cSharpTranslation = new HashMap<>();
     private static final HashMap<FieldType, String> _cSharpTranslationBack = new HashMap<>();
     
@@ -93,7 +103,7 @@ public class FieldTypeTranslations {
         if(_cSharpTranslation.containsKey(type))
             return _cSharpTranslation.get(type);
         
-        logger.warning(String.format("Returning NONE for type [%s]", type));
+        Logger.Warning("Returning NONE for type [%s]", type);
         return FieldType.NONE;
     }
 }

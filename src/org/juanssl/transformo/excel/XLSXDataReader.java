@@ -1,7 +1,18 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2015 Juan Silva <juanssl@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.juanssl.transformo.excel;
 
@@ -10,20 +21,19 @@ import org.juanssl.transformo.data.RowData;
 import org.juanssl.transformo.data.TableMeta;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.juanssl.transformo.app.Logger;
 
 /**
  *
  * @author Juan
  */
 public class XLSXDataReader extends BaseXLSXReader {
-    private static final Logger logger = Logger.getLogger("XLSXDataReader");
     
     private TableMeta _tmeta;
-    private List<RowData> _data;
+    private final List<RowData> _data;
     
     public XLSXDataReader(){
         _filePath = "";
@@ -55,24 +65,24 @@ public class XLSXDataReader extends BaseXLSXReader {
     protected void doRead() {
         _data.clear();
         if(_tmeta == null){
-            logger.severe("Table is not set");
+            Logger.Error("Table is not set");
             return;
         }
         
         if(_tmeta.TableName.isEmpty()){
-            logger.severe("Table Name is not set");
+            Logger.Error("Table Name is not set");
             return;
         }
         
         XSSFSheet sheet = _workBook.getSheet(_tmeta.TableName);
         int totalRows = sheet.getLastRowNum();
         if(totalRows < XLSXTableMetaReader.ROW_META_COUNT){
-            logger.warning(String.format("Total number of rows less than expected [%d]. %d Rows are expected", totalRows, XLSXTableMetaReader.ROW_META_COUNT));
+            Logger.Warning("Total number of rows less than expected [%d]. %d Rows are expected", totalRows, XLSXTableMetaReader.ROW_META_COUNT);
             return;
         }
         
         for(int i=3; i<=totalRows; ++i){
-            logger.warning(String.format("Scanning Row [%s][%d].", _tmeta.TableName, i));
+            Logger.Warning("Scanning Row [%s][%d].", _tmeta.TableName, i);
             RowData rdata = GenerateData(sheet.getRow(i));
             _data.add(rdata);
         }
@@ -104,15 +114,15 @@ public class XLSXDataReader extends BaseXLSXReader {
                     break;
                     
                 case Cell.CELL_TYPE_BLANK:
-                    logger.warning(String.format("Empty Data Field. Expected a [%s]", fmeta.DataType));
+                    Logger.Warning("Empty Data Field. Expected a [%s]", fmeta.DataType);
                     break;
                     
                 case Cell.CELL_TYPE_FORMULA:
-                    logger.warning("Data Type is not supported [FORMULA]");
+                    Logger.Warning("Data Type is not supported [FORMULA]");
                     break;
                     
                 case Cell.CELL_TYPE_ERROR:
-                    logger.severe("Error Reading Cell");
+                    Logger.Error("Error Reading Cell");
                     break;
             }
         }

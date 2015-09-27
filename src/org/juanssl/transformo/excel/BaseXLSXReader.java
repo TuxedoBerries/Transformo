@@ -1,22 +1,32 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2015 Juan Silva <juanssl@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.juanssl.transformo.excel;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.logging.Logger;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.juanssl.transformo.app.Logger;
 
 /**
  *
  * @author Juan
  */
 public abstract class BaseXLSXReader {
-    private static final Logger logger = Logger.getLogger("BaseXLSXReader");
     
     protected String _filePath;
     protected XSSFWorkbook _workBook;
@@ -41,7 +51,7 @@ public abstract class BaseXLSXReader {
         try {
             doRead();
         } catch (Exception ex) {
-            logger.severe(String.format("Error Reading File: %s", ex.toString()));
+            Logger.Error("Error Reading File: %s", ex.toString());
         }
         
         CloseWorkbook();
@@ -54,7 +64,7 @@ public abstract class BaseXLSXReader {
     private boolean OpenFile(){
         _file = new File(_filePath);
         if(!_file.exists()){
-            logger.severe("File does not exist");
+            Logger.Error("File does not exist");
             return false;
         }
         
@@ -70,7 +80,7 @@ public abstract class BaseXLSXReader {
         try {
             _stream = new FileInputStream(_file);
         } catch (Exception ex) {
-            logger.severe(String.format("Error reading file: %s", ex.toString()));
+            Logger.Error("Error reading file: %s", ex.toString());
             retValue = false;
         }
         
@@ -84,7 +94,7 @@ public abstract class BaseXLSXReader {
         try {
             _stream.close();
         } catch (IOException ex) {
-            logger.severe(String.format("Error closing stream: %s", ex.toString()));
+            Logger.Error("Error closing stream: %s", ex.toString());
         }
         _stream = null;
     }
@@ -94,7 +104,7 @@ public abstract class BaseXLSXReader {
         try {
             _workBook = new XSSFWorkbook(_stream);
         } catch (IOException ex) {
-            logger.severe(String.format("Error reading Excel: %s", ex.toString()));
+            Logger.Error("Error reading Excel: %s", ex.toString());
             retValue = false;
         }
         return retValue;
@@ -107,7 +117,7 @@ public abstract class BaseXLSXReader {
         try {
             _workBook.close();
         } catch (IOException ex) {
-            logger.severe(String.format("Error closing Excel: %s", ex.toString()));
+            Logger.Error("Error closing Excel: %s", ex.toString());
         }
         _workBook = null;
     }

@@ -1,7 +1,18 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2015 Juan Silva <juanssl@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.juanssl.transformo.excel;
 
@@ -10,10 +21,10 @@ import org.juanssl.transformo.data.FieldMeta;
 import org.juanssl.transformo.data.FieldTypeTranslations;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.juanssl.transformo.app.Logger;
 
 /**
  *
@@ -23,7 +34,6 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 public class XLSXTableMetaReader extends BaseXLSXReader {
     
     public static final int ROW_META_COUNT = 2;
-    private static final Logger logger = Logger.getLogger("XLSXTableMetaReader");
     private final List<TableMeta> _tableMetas;
     
     public XLSXTableMetaReader(){
@@ -61,7 +71,7 @@ public class XLSXTableMetaReader extends BaseXLSXReader {
     private TableMeta GenerateTableMeta(XSSFSheet sheet){
         int totalRows = sheet.getLastRowNum();
         if(totalRows < ROW_META_COUNT){
-            logger.warning(String.format("Total number of rows less than expected [%d]. %d Rows are expected", totalRows, ROW_META_COUNT));
+            Logger.Warning("Total number of rows less than expected [%d]. %d Rows are expected", totalRows, ROW_META_COUNT);
             return null;
         }
         
@@ -83,7 +93,7 @@ public class XLSXTableMetaReader extends BaseXLSXReader {
             if(cell.getCellType()== Cell.CELL_TYPE_STRING){
                 fmeta.FieldName = cell.getStringCellValue();
             }else{
-                logger.severe(String.format("Bad Cell Type [%s]. String is expected.", cell.getCellType()));
+                Logger.Error("Bad Cell Type [%s]. String is expected.", cell.getCellType());
             }
         }
     }
@@ -96,7 +106,7 @@ public class XLSXTableMetaReader extends BaseXLSXReader {
             if(cell.getCellType()== Cell.CELL_TYPE_STRING){
                 fmeta.FieldShortName = cell.getStringCellValue();
             }else{
-                logger.severe(String.format("Bad Cell Type [%s]. String is expected.", cell.getCellType()));
+                Logger.Error("Bad Cell Type [%s]. String is expected.", cell.getCellType());
             }
         }
     }
@@ -110,14 +120,14 @@ public class XLSXTableMetaReader extends BaseXLSXReader {
             if(cell.getCellType()== Cell.CELL_TYPE_STRING){
                 SetDataType(cell, fmeta);
             }else{
-                logger.severe(String.format("Bad Cell Type [%s]. String is expected.", cell.getCellType()));
+                Logger.Error("Bad Cell Type [%s]. String is expected.", cell.getCellType());
             }
         }
     }
     
     private void SetDataType(Cell cell, FieldMeta fmeta){
         if(cell.getCellType() != Cell.CELL_TYPE_STRING){
-            logger.severe(String.format("Bad Cell Type [%s]. String is expected.", cell.getCellType()));
+            Logger.Error("Bad Cell Type [%s]. String is expected.", cell.getCellType());
             return;
         }
         

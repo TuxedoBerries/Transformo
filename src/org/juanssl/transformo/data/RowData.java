@@ -1,23 +1,32 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2015 Juan Silva <juanssl@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.juanssl.transformo.data;
 
-import com.sun.xml.internal.bind.v2.runtime.Coordinator;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
+import org.juanssl.transformo.app.Logger;
 
 /**
  *
  * @author Juan
  */
 public class RowData {
-    private static final Logger logger = Logger.getLogger("RowData");
     
-    private Map<FieldMeta, Object> _data;
+    private final Map<FieldMeta, Object> _data;
     
     public RowData(){
         _data = new HashMap<>();
@@ -25,7 +34,7 @@ public class RowData {
     
     public void AddData(FieldMeta meta, Object data){
         if(_data.containsKey(meta)){
-            logger.severe(String.format("Already contains key [%s]", meta));
+            Logger.Error("Already contains key [%s]", meta);
             return;
         }
         
@@ -55,7 +64,7 @@ public class RowData {
                 break;
                 
             default:
-                logger.severe(String.format("Data Format Unknown [%s]", type));
+                Logger.Error("Data Format Unknown [%s]", type);
                 break;
         }
     }

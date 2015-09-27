@@ -1,7 +1,18 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2015 Juan Silva <juanssl@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.juanssl.transformo.template;
 
@@ -9,15 +20,13 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.logging.Logger;
+import org.juanssl.transformo.app.Logger;
 
 /**
  *
  * @author Juan
  */
 public class TemplateWriter {
-    
-    private static final Logger logger = Logger.getLogger("FileWriter");
     
     private File _file;
     private FileWriter _fileWriter;
@@ -37,6 +46,7 @@ public class TemplateWriter {
             return;
         }
         
+        Logger.Info("Writing data to [%s]", _file.getPath());
         WriteToFile(content);
         
         CloseBufferedWriter();
@@ -47,7 +57,7 @@ public class TemplateWriter {
     private boolean CreateFile(String path){
         _file = new File(path);
         if(_file.exists()){
-            logger.warning("File already exit. Overwriting file.");
+            Logger.Warning("File already exit. Overwriting file [%s]", _file.getPath());
             return true;
         }
         
@@ -56,7 +66,7 @@ public class TemplateWriter {
         if(!folder.exists()){
             boolean result = folder.mkdirs();
             if(!result){
-                logger.warning("Could not create parent folder");
+                Logger.Warning("Could not create parent folder");
                 return false;
             }
         }
@@ -65,7 +75,7 @@ public class TemplateWriter {
         try {
             _file.createNewFile();
         } catch (IOException ex) {
-            logger.severe(String.format("Could not create file[%s]: %s", path, ex.toString()));
+            Logger.Error("Could not create file[%s]: %s", path, ex.toString());
             return false;
         }
         
@@ -80,7 +90,7 @@ public class TemplateWriter {
         try {
             _fileWriter = new FileWriter(_file.getAbsoluteFile());
         } catch (IOException ex) {
-            logger.severe(String.format("Could not create File Writer [%s]: %s", _file.getPath(), ex.toString()));
+            Logger.Error("Could not create File Writer [%s]: %s", _file.getPath(), ex.toString());
             return false;
         }
         
@@ -95,7 +105,7 @@ public class TemplateWriter {
         try {
             _fileWriter.close();
         } catch (IOException ex) {
-            logger.severe(String.format("Could not close File Writer: %s", ex.toString()));
+            Logger.Error("Could not close File Writer: %s", ex.toString());
         }
         
         _fileWriter = null;
@@ -110,7 +120,7 @@ public class TemplateWriter {
         try {
             _bufferedWriter.write(content);
         } catch (IOException ex) {
-            logger.severe(String.format("Could not write data to file: %s", ex.toString()));
+            Logger.Error("Could not write data to file: %s", ex.toString());
         }
         return true;
     }
@@ -122,7 +132,7 @@ public class TemplateWriter {
         try {
             _bufferedWriter.close();
         } catch (IOException ex) {
-            logger.severe(String.format("Could not close Buffered Writer: %s", ex.toString()));
+            Logger.Error("Could not close Buffered Writer: %s", ex.toString());
         }
         
         _bufferedWriter = null;

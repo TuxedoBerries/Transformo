@@ -1,7 +1,18 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2015 Juan Silva <juanssl@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.juanssl.transformo.template;
 
@@ -11,7 +22,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.logging.Logger;
+import org.juanssl.transformo.app.Logger;
 
 /**
  *
@@ -19,7 +30,6 @@ import java.util.logging.Logger;
  */
 public class TemplateReader {
     
-    private static final Logger logger = Logger.getLogger("TemplateReader");
     private String _basePath;
     private String _path;
     
@@ -85,14 +95,14 @@ public class TemplateReader {
      */
     public String ReadTemplate(){
         if(_path.isEmpty()){
-            logger.severe("Empty Path");
+            Logger.Error("Empty Path");
             return "";
         }
 
         String fullPath = _basePath+_path;
         File file = new File(fullPath);
         if(!file.exists()){
-            logger.severe(String.format("File does not exist: %s", fullPath));
+            Logger.Error("File does not exist: %s", fullPath);
             return "";
         }
         
@@ -100,7 +110,7 @@ public class TemplateReader {
         try {
             lines = Files.readAllLines(Paths.get(fullPath), Charset.defaultCharset());
         } catch (IOException ex) {
-            logger.severe(String.format("Error Reading File: %s", ex.toString()));
+            Logger.Error("Error Reading File: %s", ex.toString());
         }
         
         if(lines == null)
