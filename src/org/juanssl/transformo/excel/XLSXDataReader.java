@@ -82,7 +82,6 @@ public class XLSXDataReader extends BaseXLSXReader {
         }
         
         for(int i=3; i<=totalRows; ++i){
-            Logger.Warning("Scanning Row [%s][%d].", _tmeta.TableName, i);
             RowData rdata = GenerateData(sheet.getRow(i));
             _data.add(rdata);
         }

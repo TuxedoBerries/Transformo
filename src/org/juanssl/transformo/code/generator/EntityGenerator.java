@@ -14,26 +14,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.juanssl.transformo.generator;
+package org.juanssl.transformo.code.generator;
 
-import org.juanssl.transformo.data.FieldMeta;
+import org.juanssl.transformo.data.TableMeta;
 
 /**
  *
  * @author Juan
  */
-public class FieldGenerator extends BaseGenerator {
+public class EntityGenerator extends BaseGenerator {
     
-    private final FieldMeta _fmeta;
+    private final TableMeta _meta;
     
-    public FieldGenerator(FieldMeta field){
+    public EntityGenerator(TableMeta tmeta){
         super();
-        _fmeta = field;
+        _meta = tmeta;
     }
-
+    
     @Override
-    public String Generate(String template) {
-        String result = GenerateData(template, _fmeta, 0, 0);
+    public String Generate(String template){
+        String result = template;
+        result = GenerateFile(result, _meta);
+        
         return result;
     }
 }

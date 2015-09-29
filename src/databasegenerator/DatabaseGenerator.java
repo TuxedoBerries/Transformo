@@ -5,14 +5,10 @@
  */
 package databasegenerator;
 
-import org.juanssl.transformo.data.RowData;
-import org.juanssl.transformo.data.TableMeta;
-import org.juanssl.transformo.excel.XLSXDataReader;
-import org.juanssl.transformo.excel.XLSXTableMetaReader;
-import java.util.List;
-import org.juanssl.transformo.app.Configuration;
-import org.juanssl.transformo.app.Logger;
+import org.juanssl.transformo.app.CodeConfiguration;
+import org.juanssl.transformo.app.DataConfiguration;
 import org.juanssl.transformo.app.Transformo;
+import org.juanssl.transformo.data.generator.DataFormat;
 
 /**
  *
@@ -20,44 +16,36 @@ import org.juanssl.transformo.app.Transformo;
  */
 public class DatabaseGenerator {
 
-    private static final String BASE_PATH = "Database.xlsx";
-    
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args){
-        GenerateMeta();
-        //GenerateData();
+        //GenerateMeta();
+        GenerateData();
     }
     
     public static void GenerateData(){
-        XLSXTableMetaReader reader = new XLSXTableMetaReader(BASE_PATH);
-        reader.Read();
-        List<TableMeta> tables = reader.GetTables();
+        Transformo transformo = new Transformo();
+        DataConfiguration config = transformo.GetCurrentDataConfiguration();
+        config.DatabasePath = "Database.xlsx";
+        config.TargetDataFile = "data.json";
+        config.TargetDataFormat = DataFormat.JSON;
         
-        for(int i=0; i<tables.size(); ++i){
-            TableMeta tmeta = tables.get(i);
-            XLSXDataReader dataReader = new XLSXDataReader(BASE_PATH, tmeta);
-            dataReader.Read();
-            
-            List<RowData> list = dataReader.GetData();
-            for(int r=0; r<list.size(); ++r){
-                RowData rdata = list.get(r);
-                Logger.Info(rdata.toString());
-            }
-        }
+        transformo.GenerateData();
     }
     
     public static void GenerateMeta(){
         Transformo transformo = new Transformo();
-        Configuration tableConfig = transformo.GetCurrentConfigurationByTable();
+        CodeConfiguration tableConfig = transformo.GetCurrentConfigurationByTable();
+        tableConfig.DatabasePath = "Database.xlsx";
         tableConfig.TargetFolder = "Generated/Models/";
         tableConfig.TargetNameFormat = "$table_name:class_case$.cs";
         tableConfig.TemplateFolderPath = "Templates/CSharp-Models/";
         tableConfig.TemplateFile = "template.txt";
         transformo.GenerateCodeByTables();
         
-        Configuration fieldConfig = transformo.GetCurrentConfigurationByField();
+        CodeConfiguration fieldConfig = transformo.GetCurrentConfigurationByField();
+        fieldConfig.DatabasePath = "Database.xlsx";
         fieldConfig.TargetFolder = "Generated/Interfaces/";
         fieldConfig.TargetNameFormat = "I$field_name:class_case$.cs";
         fieldConfig.TemplateFolderPath = "Templates/CSharp-Interfaces/";

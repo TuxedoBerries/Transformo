@@ -22,16 +22,16 @@ import java.io.File;
  *
  * @author juanssl
  */
-public class Configuration {
+public class CodeConfiguration {
     
     public String DatabasePath;
-    // By Table
+    // Code
     public String TemplateFolderPath;
     public String TemplateFile;
     public String TargetFolder;
     public String TargetNameFormat;
     
-    public Configuration(){
+    public CodeConfiguration(){
         DatabasePath = "Database.xlsx";
         TemplateFolderPath = "Templates/CSharp-Models/";
         TemplateFile = "template.txt";
@@ -129,11 +129,11 @@ public class Configuration {
         return true;
     }
     
-    public String GetTemplateFullPath(){
+    public String GetTemplateFullPath() {
         return TemplateFolderPath.concat(TemplateFile);
     }
     
-    public String GetTargetFullPath(){
+    public String GetTargetFullPath() {
         return TargetFolder.concat(TargetNameFormat);
     }
 }

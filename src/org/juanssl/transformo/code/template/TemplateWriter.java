@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.juanssl.transformo.template;
+package org.juanssl.transformo.code.template;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -63,7 +63,7 @@ public class TemplateWriter {
         
         // Create Folder if does not exist
         File folder = _file.getParentFile();
-        if(!folder.exists()){
+        if(folder != null && !folder.exists()){
             boolean result = folder.mkdirs();
             if(!result){
                 Logger.Warning("Could not create parent folder");

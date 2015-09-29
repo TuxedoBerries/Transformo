@@ -21,10 +21,15 @@ import java.util.List;
 import org.juanssl.transformo.data.FieldMeta;
 import org.juanssl.transformo.data.TableMeta;
 import org.juanssl.transformo.excel.XLSXTableMetaReader;
-import org.juanssl.transformo.generator.EntityGenerator;
-import org.juanssl.transformo.generator.FieldGenerator;
-import org.juanssl.transformo.template.TemplateReader;
-import org.juanssl.transformo.template.TemplateWriter;
+import org.juanssl.transformo.code.generator.EntityGenerator;
+import org.juanssl.transformo.code.generator.FieldGenerator;
+import org.juanssl.transformo.code.template.TemplateReader;
+import org.juanssl.transformo.code.template.TemplateWriter;
+import org.juanssl.transformo.data.RowData;
+import org.juanssl.transformo.data.generator.BaseGenerator;
+import org.juanssl.transformo.data.generator.JSONGenerator;
+import org.juanssl.transformo.data.generator.ShortJSONGenerator;
+import org.juanssl.transformo.excel.XLSXDataReader;
 
 /**
  *
@@ -32,16 +37,18 @@ import org.juanssl.transformo.template.TemplateWriter;
  */
 public class Transformo {
     
-    private final Configuration _configByTable;
-    private final Configuration _configByField;
+    private final CodeConfiguration _configByTable;
+    private final CodeConfiguration _configByField;
+    private final DataConfiguration _dataConfig;
     private final TemplateWriter _writer;
     
     /**
      * Initialize this instance
      */
     public Transformo(){
-        _configByTable = new Configuration();
-        _configByField = new Configuration();
+        _configByTable = new CodeConfiguration();
+        _configByField = new CodeConfiguration();
+        _dataConfig = new DataConfiguration();
         _writer = new TemplateWriter();
     }
     
@@ -50,7 +57,7 @@ public class Transformo {
      * This configuration works for generating code using the table information
      * @return Table Configuration
      */
-    public Configuration GetCurrentConfigurationByTable(){
+    public CodeConfiguration GetCurrentConfigurationByTable(){
         return _configByTable;
     }
     
@@ -60,8 +67,67 @@ public class Transformo {
      * unique information of each field in all the tables.
      * @return 
      */
-    public Configuration GetCurrentConfigurationByField(){
+    public CodeConfiguration GetCurrentConfigurationByField(){
         return _configByField;
+    }
+    
+    /**
+     * Get the current data configuration.
+     * This configuration holds the parameters to export data.
+     * @return 
+     */
+    public DataConfiguration GetCurrentDataConfiguration(){
+        return _dataConfig;
+    }
+    
+    /**
+     * Generate or export the given data source using the internal configuration.
+     */
+    public void GenerateData(){
+        GenerateData(_dataConfig);
+    }
+    
+    /**
+     * Generate or export the given data source using the the given configuration.
+     * @param config 
+     */
+    public void GenerateData(DataConfiguration config){
+        if(config == null)
+            return;
+        
+        if(!config.Validate())
+            return;
+        
+        // Create Generator
+        BaseGenerator dataGenerator = null;
+        switch(config.TargetDataFormat){
+            case JSON:
+                dataGenerator = new JSONGenerator();
+                break;
+            case SHORT_JSON:
+                dataGenerator = new ShortJSONGenerator();
+                break;
+        }
+        if(dataGenerator == null)
+            return;
+        
+        // Generate
+        XLSXTableMetaReader reader = new XLSXTableMetaReader(config.DatabasePath);
+        reader.Read();
+        List<TableMeta> tables = reader.GetTables();
+        
+        XLSXDataReader dataReader = new XLSXDataReader(config.DatabasePath);
+        for(int i=0; i<tables.size(); ++i){
+            TableMeta tmeta = tables.get(i);
+            dataReader.SetTable(tmeta);
+            dataReader.Read();
+            
+            List<RowData> list = dataReader.GetData();
+            dataGenerator.AddData(tmeta, list);
+        }
+        
+        dataGenerator.Generate();
+        _writer.WriteFile(config.GetTargetDataFullPath(), dataGenerator.GetData());
     }
     
     /**
@@ -77,7 +143,7 @@ public class Transformo {
      * This uses the given configuration.
      * @param config 
      */
-    public void GenerateCodeByTables(Configuration config){
+    public void GenerateCodeByTables(CodeConfiguration config){
         if(config == null)
             return;
         
@@ -116,7 +182,7 @@ public class Transformo {
      * This uses the given configuration.
      * @param config 
      */
-    public void GenerateCodeByFields(Configuration config){
+    public void GenerateCodeByFields(CodeConfiguration config){
         if(config == null)
             return;
         
@@ -175,7 +241,7 @@ public class Transformo {
      * @param config
      * @return Table Information
      */
-    private List<TableMeta> GetTables(Configuration config){
+    private List<TableMeta> GetTables(CodeConfiguration config){
         XLSXTableMetaReader reader = new XLSXTableMetaReader(config.DatabasePath);
         reader.Read();
         return reader.GetTables();

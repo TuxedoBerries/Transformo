@@ -89,8 +89,7 @@ public class RowData {
         return (String)_data.get(meta);
     }
     
-    @Override
-    public String toString(){
+    public String toFullJSON(){
         StringBuilder builder = new StringBuilder();
         
         builder.append("{");
@@ -121,5 +120,43 @@ public class RowData {
         builder.append("}");
         
         return builder.toString();
+    }
+    
+    public String toShortJSON(){
+        StringBuilder builder = new StringBuilder();
+        
+        builder.append("{");
+        int total = _data.size();
+        int count = 0;
+        for(FieldMeta meta : _data.keySet()){
+            builder.append("\"");
+            builder.append(meta.FieldShortName);
+            builder.append("\"");
+            builder.append(":");
+            
+            if(FieldTypeTranslations.isNumeric(meta.DataType)){
+                builder.append( _data.get(meta) );
+            }
+            if(FieldTypeTranslations.isText(meta.DataType)){
+                builder.append("\"");
+                builder.append( _data.get(meta) );
+                builder.append("\"");
+            }
+            if(FieldTypeTranslations.isBoolean(meta.DataType)){
+                builder.append( _data.get(meta) );
+            }
+            
+            if(count + 1 < total)
+                builder.append(",");
+            count++;
+        }
+        builder.append("}");
+        
+        return builder.toString();
+    }
+    
+    @Override
+    public String toString(){
+        return toFullJSON();
     }
 }
