@@ -16,6 +16,7 @@
  */
 package org.juanssl.transformo.app;
 
+import java.io.File;
 import org.juanssl.transformo.data.generator.DataFormat;
 
 /**
@@ -34,9 +35,9 @@ public class DataConfiguration {
      * Initialize this instance
      */
     public DataConfiguration(){
-        TargetDataFile = "data.json";
+        TargetDataFile = "";
         TargetDataFolder = "";
-        TargetDataFormat = DataFormat.JSON;
+        TargetDataFormat = DataFormat.NONE;
     }
     
     /**
@@ -44,6 +45,45 @@ public class DataConfiguration {
      * @return 
      */
     public boolean Validate(){
+        if(!CheckDatabasePath()){
+            Logger.Error("Database Path not valid: %s", DatabasePath);
+            return false;
+        }
+        
+        if(!CheckTarget()){
+            Logger.Error("Target Path not valid: ", GetTargetDataFullPath());
+            return false;
+        }
+        
+        return true;
+    }
+    
+    public boolean CheckDatabasePath(){
+        if(DatabasePath == null){
+            Logger.Warning("Database Path is null");
+            return false;
+        }
+        
+        if(DatabasePath.isEmpty()){
+            Logger.Warning("Database Path is Empty");
+            return false;
+        }
+        
+        if(!DatabasePath.endsWith(".xlsx")){
+            Logger.Warning("Database is not an XLSX file");
+            return false;
+        }
+        
+        File file = new File(DatabasePath);
+        if(!file.exists()){
+            Logger.Warning("Database file does not exist: ", file.getAbsolutePath());
+            return false;
+        }
+        
+        return true;
+    }
+    
+    public boolean CheckTarget(){
         if(TargetDataFile == null){
             Logger.Warning("Target Data File Name is null");
             return false;

@@ -32,11 +32,11 @@ public class CodeConfiguration {
     public String TargetNameFormat;
     
     public CodeConfiguration(){
-        DatabasePath = "Database.xlsx";
-        TemplateFolderPath = "Templates/CSharp-Models/";
-        TemplateFile = "template.txt";
-        TargetFolder = "Generated/Models/";
-        TargetNameFormat = "$table_name:class_case$.cs";
+        DatabasePath = "";
+        TemplateFolderPath = "";
+        TemplateFile = "";
+        TargetFolder = "";
+        TargetNameFormat = "";
     }
     
     public boolean Validate(){
