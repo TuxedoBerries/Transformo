@@ -28,10 +28,18 @@ public class RowData {
     
     private final Map<FieldMeta, Object> _data;
     
+    /**
+     * Initialize this instance
+     */
     public RowData(){
         _data = new HashMap<>();
     }
     
+    /**
+     * Add Data to this Row Data.
+     * @param meta
+     * @param data 
+     */
     public void AddData(FieldMeta meta, Object data){
         if(_data.containsKey(meta)){
             Logger.Error("Already contains key [%s]", meta);
@@ -69,94 +77,61 @@ public class RowData {
         }
     }
     
+    /**
+     * Check if this instance already contains data for the given field.
+     * @param meta
+     * @return 
+     */
     public boolean Contains(FieldMeta meta){
         return _data.containsKey(meta);
     }
     
+    /**
+     * Gets the boolean value for the given field.
+     * @param meta
+     * @return 
+     */
     public boolean GetBoolean(FieldMeta meta){
         return (boolean)_data.get(meta);
     }
     
+    /**
+     * Gets the long value for the given field.
+     * @param meta
+     * @return 
+     */
     public long GetLong(FieldMeta meta){
         return (long)_data.get(meta);
     }
     
+    /**
+     * Gets the Double value for the given field.
+     * @param meta
+     * @return 
+     */
     public double GetDouble(FieldMeta meta){
         return (long)_data.get(meta);
     }
     
+    /**
+     * Gets the String value for the given field.
+     * @param meta
+     * @return 
+     */
     public String GetString(FieldMeta meta){
         return (String)_data.get(meta);
     }
     
-    public String toFullJSON(){
-        StringBuilder builder = new StringBuilder();
-        
-        builder.append("{");
-        int total = _data.size();
-        int count = 0;
-        for(FieldMeta meta : _data.keySet()){
-            builder.append("\"");
-            builder.append(meta.FieldName);
-            builder.append("\"");
-            builder.append(":");
-            
-            if(FieldTypeTranslations.isNumeric(meta.DataType)){
-                builder.append( _data.get(meta) );
-            }
-            if(FieldTypeTranslations.isText(meta.DataType)){
-                builder.append("\"");
-                builder.append( _data.get(meta) );
-                builder.append("\"");
-            }
-            if(FieldTypeTranslations.isBoolean(meta.DataType)){
-                builder.append( _data.get(meta) );
-            }
-            
-            if(count + 1 < total)
-                builder.append(",");
-            count++;
-        }
-        builder.append("}");
-        
-        return builder.toString();
-    }
-    
-    public String toShortJSON(){
-        StringBuilder builder = new StringBuilder();
-        
-        builder.append("{");
-        int total = _data.size();
-        int count = 0;
-        for(FieldMeta meta : _data.keySet()){
-            builder.append("\"");
-            builder.append(meta.FieldShortName);
-            builder.append("\"");
-            builder.append(":");
-            
-            if(FieldTypeTranslations.isNumeric(meta.DataType)){
-                builder.append( _data.get(meta) );
-            }
-            if(FieldTypeTranslations.isText(meta.DataType)){
-                builder.append("\"");
-                builder.append( _data.get(meta) );
-                builder.append("\"");
-            }
-            if(FieldTypeTranslations.isBoolean(meta.DataType)){
-                builder.append( _data.get(meta) );
-            }
-            
-            if(count + 1 < total)
-                builder.append(",");
-            count++;
-        }
-        builder.append("}");
-        
-        return builder.toString();
+    /**
+     * Gets the full content data for this instance
+     * @return 
+     */
+    public Map<FieldMeta, Object> GetFullData(){
+        return _data;
     }
     
     @Override
     public String toString(){
-        return toFullJSON();
+        return RowDataConverter.ConvertToFullJSON(this);
     }
 }

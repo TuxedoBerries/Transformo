@@ -42,15 +42,70 @@ public class TableMeta {
         Fields = new ArrayList<>();
     }
     
+    /**
+     * Gets or create the specific element at the given index
+     * @param index
+     * @return 
+     */
     public FieldMeta GetOrCreateField(int index){
         AddFieldsUntil(index);
         return Fields.get(index);
     }
     
+    /**
+     * Add Fields until the given index
+     * @param index 
+     */
     private void AddFieldsUntil(int index){
         while(Fields.size() < index+1){
             Fields.add(new FieldMeta());
         }
+    }
+    
+    /**
+     * Check if two TableMeta instances are equals
+     * @param meta1
+     * @param meta2
+     * @return 
+     */
+    public static boolean Equals(TableMeta meta1, TableMeta meta2){
+        if(meta1 == meta2)
+            return true;
+        
+        // Check Null
+        if(meta1 == null && meta2 == null)
+            return true;
+        if(meta1 == null)
+            return false;
+        if(meta2 == null)
+            return false;
+            
+        // Check Name
+        if(!meta1.TableName.equals(meta2.TableName))
+            return false;
+        // Check Fields Size
+        if(meta1.Fields.size() != meta2.Fields.size())
+            return false;
+        // Check Same Fields
+        int total = meta1.Fields.size();
+        for(int t1index=0; t1index<total; ++t1index){
+            FieldMeta field1 = meta1.Fields.get(t1index);
+            boolean found = false;
+            
+            // Check First Field inside Meta 2 Fields
+            for(int t2index=0; t2index<total; ++t2index){
+                FieldMeta field2 = meta2.Fields.get(t2index);
+                if(FieldMeta.Equals(field1, field2)){
+                    found = true;
+                    break;
+                }
+            }
+            
+            if(!found)
+                return false;
+        }
+        
+        return true;
     }
     
     @Override

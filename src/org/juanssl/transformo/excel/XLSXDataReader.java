@@ -33,24 +33,21 @@ import org.juanssl.transformo.app.Logger;
 public class XLSXDataReader extends BaseXLSXReader {
     
     private TableMeta _tmeta;
-    private final List<RowData> _data;
+    private List<RowData> _data;
     
     public XLSXDataReader(){
         _filePath = "";
         _tmeta = null;
-        _data = new ArrayList<>();
     }
     
     public XLSXDataReader(String path){
         _filePath = path;
         _tmeta = null;
-        _data = new ArrayList<>();
     }
     
     public XLSXDataReader(String path, TableMeta table){
         _filePath = path;
         _tmeta = table;
-        _data = new ArrayList<>();
     }
     
     public void SetFilePath(String path){
@@ -63,7 +60,7 @@ public class XLSXDataReader extends BaseXLSXReader {
     
     @Override
     protected void doRead() {
-        _data.clear();
+        _data = new ArrayList<>();
         if(_tmeta == null){
             Logger.Error("Table is not set");
             return;

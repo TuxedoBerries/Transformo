@@ -60,8 +60,22 @@ public class XLSXTableMetaReader extends BaseXLSXReader {
             if(meta == null){
                 continue;
             }
+            
+            if(tableMetaAlreadyInList(meta))
+                continue;
+            
             _tableMetas.add(meta);
         }
+    }
+    
+    private boolean tableMetaAlreadyInList(TableMeta meta){
+        for(int i=0; i<_tableMetas.size(); ++i){
+            TableMeta currentMeta = _tableMetas.get(i);
+            if(TableMeta.Equals(meta, currentMeta))
+                return true;
+        }
+        
+        return false;
     }
     
     public List<TableMeta> GetTables(){

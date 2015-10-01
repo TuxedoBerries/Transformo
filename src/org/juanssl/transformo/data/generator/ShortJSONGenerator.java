@@ -18,6 +18,7 @@ package org.juanssl.transformo.data.generator;
 
 import org.juanssl.transformo.code.generator.Modifiers;
 import org.juanssl.transformo.data.RowData;
+import org.juanssl.transformo.data.RowDataConverter;
 
 /**
  *
@@ -40,7 +41,7 @@ public class ShortJSONGenerator extends BaseGenerator {
             _builder.append("[");
             for(int d=0; d<pack.Data.size(); ++d){
                 RowData row = pack.Data.get(d);
-                _builder.append(row.toShortJSON());
+                _builder.append( RowDataConverter.ConvertToShortJSON(row) );
                 
                 if(d+1 < pack.Data.size()){
                     _builder.append(",");
