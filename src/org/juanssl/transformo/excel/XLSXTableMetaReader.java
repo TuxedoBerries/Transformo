@@ -53,6 +53,10 @@ public class XLSXTableMetaReader extends BaseXLSXReader {
     @Override
     protected void doRead() {
         _tableMetas.clear();
+        if(_workBook == null){
+            Logger.Error("Work Book is null");
+            return;
+        }
         
         int totalCount = _workBook.getNumberOfSheets();
         for(int i=0; i<totalCount; ++i){
@@ -105,7 +109,15 @@ public class XLSXTableMetaReader extends BaseXLSXReader {
             FieldMeta fmeta = tmeta.GetOrCreateField(i);
             Cell cell = row.getCell(i);
             if(cell.getCellType()== Cell.CELL_TYPE_STRING){
-                fmeta.FieldName = cell.getStringCellValue();
+                String name = cell.getStringCellValue();
+                // Clean
+                name = name.trim();
+                if(name.endsWith("@")){
+                    name = name.replace("@", "");
+                    fmeta.IsKey = true;
+                }
+                
+                fmeta.FieldName = name;
             }else{
                 Logger.Error("Bad Cell Type [%s]. String is expected.", cell.getCellType());
             }

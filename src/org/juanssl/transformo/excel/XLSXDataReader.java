@@ -65,13 +65,27 @@ public class XLSXDataReader extends BaseXLSXReader {
             Logger.Error("Table is not set");
             return;
         }
+        if(_tmeta.TableName == null){
+           Logger.Error("Table Name is null");
+            return; 
+        }
         
         if(_tmeta.TableName.isEmpty()){
             Logger.Error("Table Name is not set");
             return;
         }
         
+        if(_workBook == null){
+            Logger.Error("Work Book is null");
+            return;
+        }
+        
         XSSFSheet sheet = _workBook.getSheet(_tmeta.TableName);
+        if(sheet == null){
+            Logger.Error("Null sheet %s", _tmeta.TableName);
+            return;
+        }
+        
         int totalRows = sheet.getLastRowNum();
         if(totalRows < XLSXTableMetaReader.ROW_META_COUNT){
             Logger.Warning("Total number of rows less than expected [%d]. %d Rows are expected", totalRows, XLSXTableMetaReader.ROW_META_COUNT);
@@ -80,7 +94,8 @@ public class XLSXDataReader extends BaseXLSXReader {
         
         for(int i=3; i<=totalRows; ++i){
             RowData rdata = GenerateData(sheet.getRow(i));
-            _data.add(rdata);
+            if(rdata != null)
+                _data.add(rdata);
         }
     }
     
@@ -89,12 +104,19 @@ public class XLSXDataReader extends BaseXLSXReader {
     }
     
     private RowData GenerateData(Row row){
+        if(row == null){
+            Logger.Error("Row is null");
+            return null;
+        }
+        
         int total = row.getLastCellNum();
         RowData rdata = new RowData();
         
         for(int i=0; i<total; ++i){
             FieldMeta fmeta = _tmeta.GetOrCreateField(i);
             Cell cell = row.getCell(i);
+            if(cell == null)
+                continue;
             
             switch(cell.getCellType()){
                 case Cell.CELL_TYPE_NUMERIC:

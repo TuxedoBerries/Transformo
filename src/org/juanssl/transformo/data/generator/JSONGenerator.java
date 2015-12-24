@@ -35,20 +35,50 @@ public class JSONGenerator extends BaseGenerator {
         _builder.append("{");
         for(int i=0; i<_data.size(); ++i){
             DataPack pack = _data.get(i);
-            _builder.append("\"");
-            _builder.append( Modifiers.ToSneakCase(pack.Meta.TableName) );
-            _builder.append("\":");
-            _builder.append("[");
-            for(int d=0; d<pack.Data.size(); ++d){
-                RowData row = pack.Data.get(d);
-                _builder.append( RowDataConverter.ConvertToFullJSON(row) );
-                
-                if(d+1 < pack.Data.size()){
-                    _builder.append(",");
-                }
+            if(pack.Meta.HasKeyField()){
+                AddObjectData(pack);
+            }else{
+                AddArrayData(pack);
             }
-            _builder.append("]");
+            
             if(i+1 < _data.size()){
+                _builder.append(",");
+            }
+        }
+        _builder.append("}");
+    }
+    
+    private void AddArrayData(DataPack pack) {
+        _builder.append("\"");
+        _builder.append( Modifiers.ToSneakCase(pack.Meta.TableName) );
+        _builder.append("\":");
+        _builder.append("[");
+
+        for(int d=0; d<pack.Data.size(); ++d){
+            RowData row = pack.Data.get(d);
+            _builder.append( RowDataConverter.ConvertToFullJSON(row) );
+
+            if(d+1 < pack.Data.size()){
+                _builder.append(",");
+            }
+        }
+        _builder.append("]");
+    }
+    
+    private void AddObjectData(DataPack pack) {
+        _builder.append("\"");
+        _builder.append( Modifiers.ToSneakCase(pack.Meta.TableName) );
+        _builder.append("\":");
+        _builder.append("{");
+
+        for(int d=0; d<pack.Data.size(); ++d){
+            RowData row = pack.Data.get(d);
+            _builder.append("\"");
+            _builder.append(row.GetAsString(pack.Meta.GetKeyField()));
+            _builder.append("\":");
+            _builder.append( RowDataConverter.ConvertToFullJSON(row) );
+
+            if(d+1 < pack.Data.size()){
                 _builder.append(",");
             }
         }

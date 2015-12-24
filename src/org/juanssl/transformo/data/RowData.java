@@ -123,6 +123,15 @@ public class RowData {
     }
     
     /**
+     * Gets the data value for the given field as a String regardless of the type.
+     * @param meta
+     * @return 
+     */
+    public String GetAsString(FieldMeta meta){
+        return _data.get(meta).toString();
+    }
+    
+    /**
      * Gets the full content data for this instance
      * @return 
      */

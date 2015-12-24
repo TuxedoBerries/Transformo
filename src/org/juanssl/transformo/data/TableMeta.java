@@ -36,10 +36,42 @@ public class TableMeta {
     public List<FieldMeta> Fields;
     
     /**
+     * The key field of this table if any
+     */
+    private FieldMeta _keyField;
+    
+    /**
      * Empty Constructor
      */
     public TableMeta(){
         Fields = new ArrayList<>();
+    }
+    
+    /**
+     * Determines if this table has a key field.
+     * @return True if a key field exist, otherwise, false.
+     */
+    public boolean HasKeyField(){
+        if(_keyField != null)
+            return true;
+        
+        for(int i=0; i<Fields.size(); ++i){
+            if(Fields.get(i).IsKey){
+                _keyField = Fields.get(i);
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Gets the Key Field if any.
+     * @return Key field, null if there is no key field.
+     */
+    public FieldMeta GetKeyField() {
+        if(HasKeyField())
+            return _keyField;
+        return null;
     }
     
     /**

@@ -38,6 +38,11 @@ public class FieldMeta {
     public FieldType DataType;
     
     /**
+     * Determines if this field is key
+     */
+    public boolean IsKey;
+    
+    /**
      * Index of the Field
      */
     public int FieldIndex;
@@ -49,6 +54,7 @@ public class FieldMeta {
         FieldName = "";
         FieldShortName = "";
         DataType = FieldType.NONE;
+        IsKey = false;
     }
     
     /**
@@ -74,6 +80,9 @@ public class FieldMeta {
         if(meta1.DataType != meta2.DataType)
             return false;
         
+        if(meta1.IsKey != meta2.IsKey)
+            return false;
+        
         return true;
     }
     
@@ -81,29 +90,26 @@ public class FieldMeta {
     public String toString(){
         StringBuilder builder = new StringBuilder();
         builder.append("{");
-        builder.append("\"");
-        builder.append("FieldName");
-        builder.append("\"");
-        builder.append(":");
+        builder.append("\"FieldName\":");
         builder.append("\"");
         builder.append(FieldName);
         builder.append("\"");
         builder.append(",");
-        builder.append("\"");
-        builder.append("FieldShortName");
-        builder.append("\"");
-        builder.append(":");
+        
+        builder.append("\"FieldShortName\":");
         builder.append("\"");
         builder.append(FieldShortName);
         builder.append("\"");
         builder.append(",");
-        builder.append("\"");
-        builder.append("DataType");
-        builder.append("\"");
-        builder.append(":");
+        
+        builder.append("\"DataType\":");
         builder.append("\"");
         builder.append(DataType.toString());
         builder.append("\"");
+        builder.append(",");
+        
+        builder.append("\"IsKey\":");
+        builder.append(IsKey);
         builder.append("}");
         
         return builder.toString();
