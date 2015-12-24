@@ -40,6 +40,7 @@ public abstract class BaseGenerator {
     private static final String FIELD_TYPE = "field_type";
     // File
     private static final String FILE_TYPE = "file:";
+    private static final String FILE_FIELD_TYPE = "[field_type]";
     // Template Reader
     private TemplateReader _mainReader;
     
@@ -145,6 +146,7 @@ public abstract class BaseGenerator {
         String returnData = data;
         if(returnData.contains(FILE_TYPE)){
             returnData = returnData.replace(FILE_TYPE, "");
+            returnData = returnData.replace(FILE_FIELD_TYPE, FieldTypeTranslations.GetType(fmeta.DataType));
             
             TemplateReader reader = GetTemplateReader();
             returnData = reader.ReadTemplate(returnData);
@@ -158,6 +160,7 @@ public abstract class BaseGenerator {
         String returnData = data;
         if(returnData.contains(FILE_TYPE)){
             returnData = returnData.replace(FILE_TYPE, "");
+            returnData = returnData.replace(FILE_FIELD_TYPE, FieldTypeTranslations.GetType(fmeta.DataType));
             
             TemplateReader reader = GetTemplateReader();
             returnData = reader.ReadTemplate(returnData);
@@ -171,6 +174,17 @@ public abstract class BaseGenerator {
         String returnData = data;
         returnData = returnData.replace(TABLE_NAME, meta.TableName);
         returnData = returnData.replace(DATE_NOW, GetDate());
+        returnData = Modifiers.Apply(returnData);
+        
+        return returnData;
+    }
+    
+    protected String DirectReplace(String data, FieldMeta fmeta){
+        String returnData = data;
+        returnData = returnData.replace(DATE_NOW, GetDate());
+        returnData = returnData.replace(FIELD_NAME, fmeta.FieldName);
+        returnData = returnData.replace(FIELD_SHORT_NAME, fmeta.FieldShortName);
+        returnData = returnData.replace(FIELD_TYPE, FieldTypeTranslations.GetType(fmeta.DataType));
         returnData = Modifiers.Apply(returnData);
         
         return returnData;

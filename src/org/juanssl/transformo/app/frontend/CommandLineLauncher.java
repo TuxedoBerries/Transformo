@@ -109,7 +109,7 @@ public class CommandLineLauncher {
         options.addOption(targetFolder);
         
         // Target File
-        Option targetFile = new Option("tfile", "Target file name expresion. [-tables or -fields only] Can use $file_name$, $field_name$ and/or $field_type$ and any modifiers.");
+        Option targetFile = new Option("tfile", "Target file name expresion. For -tables or -fields can use $file_name$, $field_name$ and/or $field_type$ and any modifiers.");
         targetFile.setArgs(1);
         targetFile.setArgName("file");
         options.addOption(targetFile);
@@ -143,7 +143,9 @@ public class CommandLineLauncher {
         
         // Database
         if(cmd.hasOption("d")){
-            config.DatabasePath = cmd.getOptionValue("d");
+            String database = cmd.getOptionValue("d");
+            Logger.Info("Database: %s", database);
+            config.DatabasePath = database;
         }else{
             Logger.Error("Missing database path");
             return;
@@ -151,7 +153,9 @@ public class CommandLineLauncher {
         
         // Target File
         if(cmd.hasOption("tfile")){
-            config.TargetDataFile = cmd.getOptionValue("tfile");
+            String fileName = cmd.getOptionValue("tfile");
+            Logger.Info("Output data file: %s", fileName);
+            config.TargetDataFile = fileName;
         }else{ 
             Logger.Info("Setting default data output file to \"data.json\"");
             config.TargetDataFile = "data.json";
@@ -159,7 +163,9 @@ public class CommandLineLauncher {
         
         // Target Folder
         if(cmd.hasOption("tfolder")){
-            config.TargetDataFolder = cmd.getOptionValue("tfolder");
+            String folder = cmd.getOptionValue("tfolder");
+            Logger.Info("Output folder: %s", folder);
+            config.TargetDataFolder = folder;
         }
         
         // Target Format
@@ -168,12 +174,16 @@ public class CommandLineLauncher {
             Logger.Info("Setting default output format JSON");
         }else{
             if(cmd.hasOption("json")){
+                Logger.Info("Format set to JSON");
                 config.TargetDataFormat = DataFormat.JSON;
             }
             if(cmd.hasOption("sjson")){
+                Logger.Info("Format set to Short JSON");
                 config.TargetDataFormat = DataFormat.SHORT_JSON;
             }
         }
+        
+        Logger.Info("------------------");
         transformo.GenerateData();
     }
     
@@ -183,7 +193,9 @@ public class CommandLineLauncher {
         
         // Database
         if(cmd.hasOption("d")){
-            tableConfig.DatabasePath = cmd.getOptionValue("d");
+            String database = cmd.getOptionValue("d");
+            Logger.Info("Database: %s", database);
+            tableConfig.DatabasePath = database;
         }else{
             Logger.Error("Missing database path");
             return;
@@ -191,12 +203,16 @@ public class CommandLineLauncher {
         
         // Target Folder
         if(cmd.hasOption("tfolder")){
-            tableConfig.TargetFolder = cmd.getOptionValue("tfolder");
+            String folder = cmd.getOptionValue("tfolder");
+            Logger.Info("Output folder: %s", folder);
+            tableConfig.TargetFolder = folder;
         }
         
         // Target File
         if(cmd.hasOption("tfile")){
-            tableConfig.TargetNameFormat = cmd.getOptionValue("tfile");
+            String fileName = cmd.getOptionValue("tfile");
+            Logger.Info("Output file: %s", fileName);
+            tableConfig.TargetNameFormat = fileName;
         }else{ 
             Logger.Info("Setting default data output file to \"$table_name:class_case$\"");
             tableConfig.TargetNameFormat = "$table_name:class_case$";
@@ -204,17 +220,22 @@ public class CommandLineLauncher {
         
         // Template Folder
         if(cmd.hasOption("sfolder")){
-            tableConfig.TemplateFolderPath = cmd.getOptionValue("sfolder");
+            String folder = cmd.getOptionValue("sfolder");
+            Logger.Info("Template source folder: %s", folder);
+            tableConfig.TemplateFolderPath = folder;
         }
         
         // Template File
         if(cmd.hasOption("sfile")){
-            tableConfig.TemplateFile = cmd.getOptionValue("sfolder");
+            String file = cmd.getOptionValue("sfile");
+            Logger.Info("Template source file: %s", file);
+            tableConfig.TemplateFile = file;
         }else{
             Logger.Info("Setting default template source file to \"template.txt\"");
             tableConfig.TemplateFile = "template.txt";
         }
         
+        Logger.Info("------------------");
         transformo.GenerateCodeByTables();
     }
     
@@ -224,7 +245,9 @@ public class CommandLineLauncher {
         
         // Database
         if(cmd.hasOption("d")){
-            fieldConfig.DatabasePath = cmd.getOptionValue("d");
+            String database = cmd.getOptionValue("d");
+            Logger.Info("Database: %s", database);
+            fieldConfig.DatabasePath = database;
         }else{
             Logger.Error("Missing database path");
             return;
@@ -232,12 +255,16 @@ public class CommandLineLauncher {
         
         // Target Folder
         if(cmd.hasOption("tfolder")){
-            fieldConfig.TargetFolder = cmd.getOptionValue("tfolder");
+            String folder = cmd.getOptionValue("tfolder");
+            Logger.Info("Output folder: %s", folder);
+            fieldConfig.TargetFolder = folder;
         }
         
         // Target File
         if(cmd.hasOption("tfile")){
-            fieldConfig.TargetNameFormat = cmd.getOptionValue("tfile");
+            String fileName = cmd.getOptionValue("tfile");
+            Logger.Info("Output file: %s", fileName);
+            fieldConfig.TargetNameFormat = fileName;
         }else{ 
             Logger.Info("Setting default data output file to \"$field_name:class_case$\"");
             fieldConfig.TargetNameFormat = "$field_name:class_case$";
@@ -245,16 +272,22 @@ public class CommandLineLauncher {
         
         // Template Folder
         if(cmd.hasOption("sfolder")){
-            fieldConfig.TemplateFolderPath = cmd.getOptionValue("sfolder");
+            String folder = cmd.getOptionValue("sfolder");
+            Logger.Info("Template source folder: %s", folder);
+            fieldConfig.TemplateFolderPath = folder;
         }
         
         // Template File
         if(cmd.hasOption("sfile")){
-            fieldConfig.TemplateFile = cmd.getOptionValue("sfolder");
+            String file = cmd.getOptionValue("sfile");
+            Logger.Info("Template source file: %s", file);
+            fieldConfig.TemplateFile = file;
         }else{
             Logger.Info("Setting default template source file to \"template.txt\"");
             fieldConfig.TemplateFile = "template.txt";
         }
+        
+        Logger.Info("------------------");
         transformo.GenerateCodeByFields();
     }
 }

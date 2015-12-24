@@ -7,4 +7,3 @@
 			return _$field_name:camel_case$;
 		}
 	}
-
