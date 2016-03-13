@@ -18,76 +18,83 @@ package org.juanssl.transformo.data;
 
 /**
  *
- * @author Juan
+ * @author Juan Silva
  */
 public class FieldMeta {
-    
+
     /**
      * Name of the Field
      */
     public String FieldName;
-    
+
     /**
      * Short Name of the Field
      */
     public String FieldShortName;
-    
+
     /**
      * Data Type of the Field
      */
     public FieldType DataType;
-    
+
     /**
      * Determines if this field is key
      */
     public boolean IsKey;
-    
+
     /**
      * Index of the Field
      */
     public int FieldIndex;
-    
+
     /**
      * Initialize this instance
      */
-    public FieldMeta(){
+    public FieldMeta() {
         FieldName = "";
         FieldShortName = "";
         DataType = FieldType.NONE;
         IsKey = false;
     }
-    
+
     /**
-     * Compares two FieldMeta classes in order to check
-     * the equivalence between the given two.
+     * Compares two FieldMeta classes in order to check the equivalence between
+     * the given two.
+     *
      * @param meta1
      * @param meta2
-     * @return 
+     * @return
      */
-    public static boolean Equals(FieldMeta meta1, FieldMeta meta2){
-        if(meta1 == null && meta2 == null)
+    public static boolean equals(FieldMeta meta1, FieldMeta meta2) {
+        if (meta1 == null && meta2 == null) {
             return true;
-        
-        if(meta1 == null || meta2 == null)
+        }
+
+        if (meta1 == null || meta2 == null) {
             return false;
-        
-        if(!meta1.FieldName.equals(meta2.FieldName))
+        }
+
+        if (!meta1.FieldName.equals(meta2.FieldName)) {
             return false;
-        
-        if(!meta1.FieldShortName.equals(meta2.FieldShortName))
+        }
+
+        if (!meta1.FieldShortName.equals(meta2.FieldShortName)) {
             return false;
-        
-        if(meta1.DataType != meta2.DataType)
+        }
+
+        if (meta1.DataType != meta2.DataType) {
             return false;
-        
-        if(meta1.IsKey != meta2.IsKey)
+        }
+
+        if (meta1.IsKey != meta2.IsKey) {
             return false;
-        
+        }
+
         return true;
     }
-    
+
     @Override
-    public String toString(){
+    public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("{");
         builder.append("\"FieldName\":");
@@ -95,23 +102,23 @@ public class FieldMeta {
         builder.append(FieldName);
         builder.append("\"");
         builder.append(",");
-        
+
         builder.append("\"FieldShortName\":");
         builder.append("\"");
         builder.append(FieldShortName);
         builder.append("\"");
         builder.append(",");
-        
+
         builder.append("\"DataType\":");
         builder.append("\"");
         builder.append(DataType.toString());
         builder.append("\"");
         builder.append(",");
-        
+
         builder.append("\"IsKey\":");
         builder.append(IsKey);
         builder.append("}");
-        
+
         return builder.toString();
     }
 }

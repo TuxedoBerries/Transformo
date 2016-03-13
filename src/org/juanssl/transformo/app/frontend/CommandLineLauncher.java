@@ -39,7 +39,7 @@ public class CommandLineLauncher {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args){
+    public static void main(String[] args) {
         // Build Options
         Options options = getOptions();
         CommandLineParser parser = new DefaultParser();
@@ -52,38 +52,39 @@ public class CommandLineLauncher {
             printHelp(options);
         }
         // Close if something goes wrong
-        if(cmd == null)
+        if (cmd == null) {
             return;
-        
+        }
+
         // Print Help if needed
-        if(cmd.hasOption("help")){
+        if (cmd.hasOption("help")) {
             printHelp(options);
             return;
         }
-        
+
         // Generation
-        if(cmd.hasOption("data")){
+        if (cmd.hasOption("data")) {
             generateData(cmd);
             return;
         }
-        if(cmd.hasOption("tables")){
+        if (cmd.hasOption("tables")) {
             generateMetaTables(cmd);
             return;
         }
-        if(cmd.hasOption("fields")){
+        if (cmd.hasOption("fields")) {
             generateMetaFields(cmd);
         }
     }
-    
-    public static void printHelp(Options options){
+
+    public static void printHelp(Options options) {
         HelpFormatter formatter = new HelpFormatter();
         formatter.printHelp("transformo", options, true);
     }
-    
-    public static Options getOptions(){
+
+    public static Options getOptions() {
         Options options = new Options();
         options.addOption("help", "Print this message.");
-        
+
         // Generation
         OptionGroup genGroup = new OptionGroup();
         Option tablesOption = new Option("tables", "Generate filled templates by using each table information.");
@@ -94,26 +95,26 @@ public class CommandLineLauncher {
         genGroup.addOption(dataOption);
         genGroup.setRequired(true);
         options.addOptionGroup(genGroup);
-        
+
         // Database
         Option database = new Option("d", "Use the given Database. Just XLSX format Supported for now.");
         database.setArgs(1);
         database.setArgName("file");
         database.setRequired(true);
         options.addOption(database);
-        
+
         // Target Folder
         Option targetFolder = new Option("tfolder", "Target folder where to save the result.");
         targetFolder.setArgs(1);
         targetFolder.setArgName("folder");
         options.addOption(targetFolder);
-        
+
         // Target File
         Option targetFile = new Option("tfile", "Target file name expresion. For -tables or -fields can use $file_name$, $field_name$ and/or $field_type$ and any modifiers.");
         targetFile.setArgs(1);
         targetFile.setArgName("file");
         options.addOption(targetFile);
-        
+
         // Target Format
         OptionGroup formatGroup = new OptionGroup();
         Option jsonOption = new Option("json", "[-data only] Generate data using JSON format.");
@@ -121,173 +122,173 @@ public class CommandLineLauncher {
         formatGroup.addOption(jsonOption);
         formatGroup.addOption(shortJsonOption);
         options.addOptionGroup(formatGroup);
-        
+
         // Template Folder
         Option templateFolder = new Option("sfolder", "[-tables or -fields only] Template source folder. Where to locate all different templates to use.");
         templateFolder.setArgs(1);
         templateFolder.setArgName("folder");
         options.addOption(templateFolder);
-        
+
         // Template File
         Option templateFile = new Option("sfile", "[-tables or -fields only] Template index source file. The point of origin for the templates.");
         templateFile.setArgs(1);
         templateFile.setArgName("file");
         options.addOption(templateFile);
-        
+
         return options;
     }
-    
-    public static void generateData(CommandLine cmd){
+
+    public static void generateData(CommandLine cmd) {
         Transformo transformo = new Transformo();
-        DataConfiguration config = transformo.GetCurrentDataConfiguration();
-        
+        DataConfiguration config = transformo.getCurrentDataConfiguration();
+
         // Database
-        if(cmd.hasOption("d")){
+        if (cmd.hasOption("d")) {
             String database = cmd.getOptionValue("d");
             Logger.Info("Database: %s", database);
             config.DatabasePath = database;
-        }else{
+        } else {
             Logger.Error("Missing database path");
             return;
         }
-        
+
         // Target File
-        if(cmd.hasOption("tfile")){
+        if (cmd.hasOption("tfile")) {
             String fileName = cmd.getOptionValue("tfile");
             Logger.Info("Output data file: %s", fileName);
             config.TargetDataFile = fileName;
-        }else{ 
+        } else {
             Logger.Info("Setting default data output file to \"data.json\"");
             config.TargetDataFile = "data.json";
         }
-        
+
         // Target Folder
-        if(cmd.hasOption("tfolder")){
+        if (cmd.hasOption("tfolder")) {
             String folder = cmd.getOptionValue("tfolder");
             Logger.Info("Output folder: %s", folder);
             config.TargetDataFolder = folder;
         }
-        
+
         // Target Format
-        if(!cmd.hasOption("json") && !cmd.hasOption("sjson")){
+        if (!cmd.hasOption("json") && !cmd.hasOption("sjson")) {
             config.TargetDataFormat = DataFormat.JSON;
             Logger.Info("Setting default output format JSON");
-        }else{
-            if(cmd.hasOption("json")){
+        } else {
+            if (cmd.hasOption("json")) {
                 Logger.Info("Format set to JSON");
                 config.TargetDataFormat = DataFormat.JSON;
             }
-            if(cmd.hasOption("sjson")){
+            if (cmd.hasOption("sjson")) {
                 Logger.Info("Format set to Short JSON");
                 config.TargetDataFormat = DataFormat.SHORT_JSON;
             }
         }
-        
+
         Logger.Info("------------------");
-        transformo.GenerateData();
+        transformo.generateData();
     }
-    
-    public static void generateMetaTables(CommandLine cmd){
+
+    public static void generateMetaTables(CommandLine cmd) {
         Transformo transformo = new Transformo();
-        CodeConfiguration tableConfig = transformo.GetCurrentConfigurationByTable();
-        
+        CodeConfiguration tableConfig = transformo.getCurrentConfigurationByTable();
+
         // Database
-        if(cmd.hasOption("d")){
+        if (cmd.hasOption("d")) {
             String database = cmd.getOptionValue("d");
             Logger.Info("Database: %s", database);
             tableConfig.DatabasePath = database;
-        }else{
+        } else {
             Logger.Error("Missing database path");
             return;
         }
-        
+
         // Target Folder
-        if(cmd.hasOption("tfolder")){
+        if (cmd.hasOption("tfolder")) {
             String folder = cmd.getOptionValue("tfolder");
             Logger.Info("Output folder: %s", folder);
             tableConfig.TargetFolder = folder;
         }
-        
+
         // Target File
-        if(cmd.hasOption("tfile")){
+        if (cmd.hasOption("tfile")) {
             String fileName = cmd.getOptionValue("tfile");
             Logger.Info("Output file: %s", fileName);
             tableConfig.TargetNameFormat = fileName;
-        }else{ 
+        } else {
             Logger.Info("Setting default data output file to \"$table_name:class_case$\"");
             tableConfig.TargetNameFormat = "$table_name:class_case$";
         }
-        
+
         // Template Folder
-        if(cmd.hasOption("sfolder")){
+        if (cmd.hasOption("sfolder")) {
             String folder = cmd.getOptionValue("sfolder");
             Logger.Info("Template source folder: %s", folder);
             tableConfig.TemplateFolderPath = folder;
         }
-        
+
         // Template File
-        if(cmd.hasOption("sfile")){
+        if (cmd.hasOption("sfile")) {
             String file = cmd.getOptionValue("sfile");
             Logger.Info("Template source file: %s", file);
             tableConfig.TemplateFile = file;
-        }else{
+        } else {
             Logger.Info("Setting default template source file to \"template.txt\"");
             tableConfig.TemplateFile = "template.txt";
         }
-        
+
         Logger.Info("------------------");
-        transformo.GenerateCodeByTables();
+        transformo.generateCodeByTables();
     }
-    
-    public static void generateMetaFields(CommandLine cmd){
+
+    public static void generateMetaFields(CommandLine cmd) {
         Transformo transformo = new Transformo();
-        CodeConfiguration fieldConfig = transformo.GetCurrentConfigurationByField();
-        
+        CodeConfiguration fieldConfig = transformo.getCurrentConfigurationByField();
+
         // Database
-        if(cmd.hasOption("d")){
+        if (cmd.hasOption("d")) {
             String database = cmd.getOptionValue("d");
             Logger.Info("Database: %s", database);
             fieldConfig.DatabasePath = database;
-        }else{
+        } else {
             Logger.Error("Missing database path");
             return;
         }
-        
+
         // Target Folder
-        if(cmd.hasOption("tfolder")){
+        if (cmd.hasOption("tfolder")) {
             String folder = cmd.getOptionValue("tfolder");
             Logger.Info("Output folder: %s", folder);
             fieldConfig.TargetFolder = folder;
         }
-        
+
         // Target File
-        if(cmd.hasOption("tfile")){
+        if (cmd.hasOption("tfile")) {
             String fileName = cmd.getOptionValue("tfile");
             Logger.Info("Output file: %s", fileName);
             fieldConfig.TargetNameFormat = fileName;
-        }else{ 
+        } else {
             Logger.Info("Setting default data output file to \"$field_name:class_case$\"");
             fieldConfig.TargetNameFormat = "$field_name:class_case$";
         }
-        
+
         // Template Folder
-        if(cmd.hasOption("sfolder")){
+        if (cmd.hasOption("sfolder")) {
             String folder = cmd.getOptionValue("sfolder");
             Logger.Info("Template source folder: %s", folder);
             fieldConfig.TemplateFolderPath = folder;
         }
-        
+
         // Template File
-        if(cmd.hasOption("sfile")){
+        if (cmd.hasOption("sfile")) {
             String file = cmd.getOptionValue("sfile");
             Logger.Info("Template source file: %s", file);
             fieldConfig.TemplateFile = file;
-        }else{
+        } else {
             Logger.Info("Setting default template source file to \"template.txt\"");
             fieldConfig.TemplateFile = "template.txt";
         }
-        
+
         Logger.Info("------------------");
-        transformo.GenerateCodeByFields();
+        transformo.generateCodeByFields();
     }
 }

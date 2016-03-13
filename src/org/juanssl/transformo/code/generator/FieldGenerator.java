@@ -20,20 +20,20 @@ import org.juanssl.transformo.data.FieldMeta;
 
 /**
  *
- * @author Juan
+ * @author Juan Silva
  */
 public class FieldGenerator extends BaseGenerator {
-    
+
     private final FieldMeta _fmeta;
-    
-    public FieldGenerator(FieldMeta field){
+
+    public FieldGenerator(FieldMeta field) {
         super();
         _fmeta = field;
     }
 
     @Override
-    public String Generate(String template) {
-        String result = GenerateData(template, _fmeta, 0, 0);
+    public String generate(String template) {
+        String result = generateData(template, _fmeta, 0, 0);
         return result;
     }
 }

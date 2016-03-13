@@ -18,11 +18,10 @@ package org.juanssl.transformo.data;
 
 /**
  *
- * @author Juan
+ * @author Juan Silva
  */
 public enum FieldType {
     NONE,
-    
     // C# Support
     CSHARP_BYTE,
     CSHARP_SBYTE,

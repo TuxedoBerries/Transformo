@@ -25,10 +25,10 @@ import java.util.Date;
 
 /**
  *
- * @author Juan
+ * @author Juan Silva
  */
 public abstract class BaseGenerator {
-    
+
     // Date
     private static final String DATE_NOW = "@date";
     // Table
@@ -43,192 +43,198 @@ public abstract class BaseGenerator {
     private static final String FILE_FIELD_TYPE = "[field_type]";
     // Template Reader
     private TemplateReader _mainReader;
-    
+
     /**
      * Generate the specific filled template.
+     *
      * @param template
-     * @return 
+     * @return
      */
-    public abstract String Generate(String template);
-    
+    public abstract String generate(String template);
+
     /**
-     * Sets the Template Reader for this Generator.
-     * If not set, one will be created.
-     * @param reader 
+     * Sets the Template Reader for this Generator. If not set, one will be
+     * created.
+     *
+     * @param reader
      */
-    public void SetTemplateReader(TemplateReader reader){
+    public void setTemplateReader(TemplateReader reader) {
         _mainReader = reader;
     }
-    
+
     /**
      * Generate a filled file given the specific template and table meta
+     *
      * @param template
      * @param tmeta
-     * @return 
+     * @return
      */
-    protected String GenerateFile(String template, TableMeta tmeta){
+    protected String generateFile(String template, TableMeta tmeta) {
         String[] words = template.split("\\$*\\$");
         StringBuilder builder = new StringBuilder();
-        for(int i=0; i<words.length; ++i){
-            String replaced = DirectReplace(words[i], tmeta);
-            builder.append(GenerateFields(replaced, tmeta));
+        for (int i = 0; i < words.length; ++i) {
+            String replaced = BaseGenerator.this.directReplace(words[i], tmeta);
+            builder.append(generateFields(replaced, tmeta));
         }
         return builder.toString();
     }
-    
+
     /**
      * Generates Fields if any given the specific template and table meta.
+     *
      * @param data
      * @param tmeta
-     * @return 
+     * @return
      */
-    protected String GenerateFields(String data, TableMeta tmeta){
+    protected String generateFields(String data, TableMeta tmeta) {
         String returnData = data;
-        if(returnData.contains(FIELDS)){
+        if (returnData.contains(FIELDS)) {
             returnData = returnData.replace(FIELDS, "");
             String subset = "";
-            for(int i=0; i<tmeta.Fields.size(); ++i){
-                subset += ReplaceFile(returnData, tmeta, tmeta.Fields.get(i), i, tmeta.Fields.size());
+            for (int i = 0; i < tmeta.Fields.size(); ++i) {
+                subset += replaceFile(returnData, tmeta, tmeta.Fields.get(i), i, tmeta.Fields.size());
             }
-            returnData = subset; 
+            returnData = subset;
         }
         return returnData;
     }
-    
-    protected String GenerateData(String template, TableMeta tmeta){
+
+    protected String generateData(String template, TableMeta tmeta) {
         String[] words = template.split("\\$*\\$");
         // Generate Fields
         StringBuilder builder = new StringBuilder();
-        for(int i=0; i<words.length; ++i){
-            String replaced = DirectReplace(words[i], tmeta);
-            replaced = ReplaceFile(replaced, tmeta);
-            builder.append(GenerateFields(replaced, tmeta));
+        for (int i = 0; i < words.length; ++i) {
+            String replaced = BaseGenerator.this.directReplace(words[i], tmeta);
+            replaced = BaseGenerator.this.replaceFile(replaced, tmeta);
+            builder.append(generateFields(replaced, tmeta));
         }
         return builder.toString();
     }
-    
-    protected String GenerateData(String template, FieldMeta fmeta, int current, int total){
+
+    protected String generateData(String template, FieldMeta fmeta, int current, int total) {
         String[] words = template.split("\\$*\\$");
         // Generate Fields
         StringBuilder builder = new StringBuilder();
-        for(int i=0; i<words.length; ++i){
-            String replaced = DirectReplace(words[i], fmeta, current, total);
-            replaced = ReplaceFile(replaced, fmeta, current, total);
+        for (int i = 0; i < words.length; ++i) {
+            String replaced = BaseGenerator.this.directReplace(words[i], fmeta, current, total);
+            replaced = BaseGenerator.this.replaceFile(replaced, fmeta, current, total);
             builder.append(replaced);
         }
         return builder.toString();
     }
-    
-    protected String GenerateData(String template, TableMeta tmeta, FieldMeta fmeta, int current, int total){
+
+    protected String generateData(String template, TableMeta tmeta, FieldMeta fmeta, int current, int total) {
         String[] words = template.split("\\$*\\$");
         // Generate Fields
         StringBuilder builder = new StringBuilder();
-        for(int i=0; i<words.length; ++i){
-            builder.append(DirectReplace(words[i], tmeta, fmeta, current, total));
+        for (int i = 0; i < words.length; ++i) {
+            builder.append(directReplace(words[i], tmeta, fmeta, current, total));
         }
         return builder.toString();
     }
-    
-    protected String ReplaceFile(String data, TableMeta tmeta){
+
+    protected String replaceFile(String data, TableMeta tmeta) {
         String returnData = data;
-        if(returnData.contains(FILE_TYPE)){
+        if (returnData.contains(FILE_TYPE)) {
             returnData = returnData.replace(FILE_TYPE, "");
-            
-            TemplateReader reader = GetTemplateReader();
-            returnData = reader.ReadTemplate(returnData);
-            returnData = GenerateData(returnData, tmeta);
+
+            TemplateReader reader = getTemplateReader();
+            returnData = reader.readTemplate(returnData);
+            returnData = BaseGenerator.this.generateData(returnData, tmeta);
         }
-        
+
         return returnData;
     }
-    
-    protected String ReplaceFile(String data, FieldMeta fmeta, int current, int total){
+
+    protected String replaceFile(String data, FieldMeta fmeta, int current, int total) {
         String returnData = data;
-        if(returnData.contains(FILE_TYPE)){
+        if (returnData.contains(FILE_TYPE)) {
             returnData = returnData.replace(FILE_TYPE, "");
-            returnData = returnData.replace(FILE_FIELD_TYPE, FieldTypeTranslations.GetType(fmeta.DataType));
-            
-            TemplateReader reader = GetTemplateReader();
-            returnData = reader.ReadTemplate(returnData);
-            returnData = GenerateData(returnData, fmeta, current, total);
+            returnData = returnData.replace(FILE_FIELD_TYPE, FieldTypeTranslations.getType(fmeta.DataType));
+
+            TemplateReader reader = getTemplateReader();
+            returnData = reader.readTemplate(returnData);
+            returnData = BaseGenerator.this.generateData(returnData, fmeta, current, total);
         }
-        
+
         return returnData;
     }
-    
-    protected String ReplaceFile(String data, TableMeta tmeta, FieldMeta fmeta, int current, int total){
+
+    protected String replaceFile(String data, TableMeta tmeta, FieldMeta fmeta, int current, int total) {
         String returnData = data;
-        if(returnData.contains(FILE_TYPE)){
+        if (returnData.contains(FILE_TYPE)) {
             returnData = returnData.replace(FILE_TYPE, "");
-            returnData = returnData.replace(FILE_FIELD_TYPE, FieldTypeTranslations.GetType(fmeta.DataType));
-            
-            TemplateReader reader = GetTemplateReader();
-            returnData = reader.ReadTemplate(returnData);
-            returnData = GenerateData(returnData, tmeta, fmeta, current, total);
+            returnData = returnData.replace(FILE_FIELD_TYPE, FieldTypeTranslations.getType(fmeta.DataType));
+
+            TemplateReader reader = getTemplateReader();
+            returnData = reader.readTemplate(returnData);
+            returnData = generateData(returnData, tmeta, fmeta, current, total);
         }
-        
+
         return returnData;
     }
-    
-    protected String DirectReplace(String data, TableMeta meta){
+
+    protected String directReplace(String data, TableMeta meta) {
         String returnData = data;
         returnData = returnData.replace(TABLE_NAME, meta.TableName);
-        returnData = returnData.replace(DATE_NOW, GetDate());
-        returnData = Modifiers.Apply(returnData);
-        
+        returnData = returnData.replace(DATE_NOW, getDate());
+        returnData = Modifiers.apply(returnData);
+
         return returnData;
     }
-    
-    protected String DirectReplace(String data, FieldMeta fmeta){
+
+    protected String directReplace(String data, FieldMeta fmeta) {
         String returnData = data;
-        returnData = returnData.replace(DATE_NOW, GetDate());
+        returnData = returnData.replace(DATE_NOW, getDate());
         returnData = returnData.replace(FIELD_NAME, fmeta.FieldName);
         returnData = returnData.replace(FIELD_SHORT_NAME, fmeta.FieldShortName);
-        returnData = returnData.replace(FIELD_TYPE, FieldTypeTranslations.GetType(fmeta.DataType));
-        returnData = Modifiers.Apply(returnData);
-        
+        returnData = returnData.replace(FIELD_TYPE, FieldTypeTranslations.getType(fmeta.DataType));
+        returnData = Modifiers.apply(returnData);
+
         return returnData;
     }
-    
-    protected String DirectReplace(String data, FieldMeta fmeta, int current, int total){
+
+    protected String directReplace(String data, FieldMeta fmeta, int current, int total) {
         String returnData = data;
-        returnData = returnData.replace(DATE_NOW, GetDate());
+        returnData = returnData.replace(DATE_NOW, getDate());
         returnData = returnData.replace(FIELD_NAME, fmeta.FieldName);
         returnData = returnData.replace(FIELD_SHORT_NAME, fmeta.FieldShortName);
-        returnData = returnData.replace(FIELD_TYPE, FieldTypeTranslations.GetType(fmeta.DataType));
-        returnData = Modifiers.Apply(returnData);
-        returnData = Modifiers.Apply(returnData, current, total);
-        
+        returnData = returnData.replace(FIELD_TYPE, FieldTypeTranslations.getType(fmeta.DataType));
+        returnData = Modifiers.apply(returnData);
+        returnData = Modifiers.apply(returnData, current, total);
+
         return returnData;
     }
-    
-    protected String DirectReplace(String data, TableMeta meta, FieldMeta fmeta, int current, int total){
+
+    protected String directReplace(String data, TableMeta meta, FieldMeta fmeta, int current, int total) {
         String returnData = data;
         returnData = returnData.replace(TABLE_NAME, meta.TableName);
-        returnData = returnData.replace(DATE_NOW, GetDate());
+        returnData = returnData.replace(DATE_NOW, getDate());
         returnData = returnData.replace(FIELD_NAME, fmeta.FieldName);
         returnData = returnData.replace(FIELD_SHORT_NAME, fmeta.FieldShortName);
-        returnData = returnData.replace(FIELD_TYPE, FieldTypeTranslations.GetType(fmeta.DataType));
-        returnData = Modifiers.Apply(returnData);
-        returnData = Modifiers.Apply(returnData, current, total);
-        
+        returnData = returnData.replace(FIELD_TYPE, FieldTypeTranslations.getType(fmeta.DataType));
+        returnData = Modifiers.apply(returnData);
+        returnData = Modifiers.apply(returnData, current, total);
+
         return returnData;
     }
-    
-    protected String GetDate(){
+
+    protected String getDate() {
         Date date = new Date();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         return format.format(date);
     }
-    
+
     /**
      * Gets a Template Reader ready to read any template given.
-     * @return 
+     *
+     * @return
      */
-    private TemplateReader GetTemplateReader(){
-        if(_mainReader == null)
+    private TemplateReader getTemplateReader() {
+        if (_mainReader == null) {
             _mainReader = new TemplateReader();
-        
+        }
+
         return _mainReader;
     }
 }

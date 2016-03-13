@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 juanssl
+ * Copyright (C) 2015 Juan Silva <juanssl@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,33 +22,45 @@ import org.juanssl.transformo.data.TableMeta;
 
 /**
  *
- * @author juanssl
+ * @author Juan Silva
  */
 public class DataPack {
-    
+
     // Table For this Data
     public TableMeta Meta;
-    
+
     // Data of the Table
     List<RowData> Data;
-    
-    public DataPack(){
+
+    public DataPack() {
         Meta = null;
         Data = null;
     }
-    
-    public DataPack(TableMeta meta){
+
+    public DataPack(TableMeta meta) {
         Meta = meta;
         Data = null;
     }
-    
-    public DataPack(List<RowData> data){
+
+    public DataPack(List<RowData> data) {
         Meta = null;
         Data = data;
     }
-    
-    public DataPack(TableMeta meta, List<RowData> data){
+
+    public DataPack(TableMeta meta, List<RowData> data) {
         Meta = meta;
         Data = data;
+    }
+
+    /**
+     * Removes all the empty rows in the Data list
+     */
+    public void cleanData() {
+        for (int i = Data.size() - 1; i >= 0; --i) {
+            RowData data = Data.get(i);
+            if (data.getDataCount() <= 0) {
+                Data.remove(i);
+            }
+        }
     }
 }

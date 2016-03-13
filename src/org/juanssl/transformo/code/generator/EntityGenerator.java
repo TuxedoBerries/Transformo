@@ -20,22 +20,22 @@ import org.juanssl.transformo.data.TableMeta;
 
 /**
  *
- * @author Juan
+ * @author Juan Silva
  */
 public class EntityGenerator extends BaseGenerator {
-    
+
     private final TableMeta _meta;
-    
-    public EntityGenerator(TableMeta tmeta){
+
+    public EntityGenerator(TableMeta tmeta) {
         super();
         _meta = tmeta;
     }
-    
+
     @Override
-    public String Generate(String template){
+    public String generate(String template) {
         String result = template;
-        result = GenerateFile(result, _meta);
-        
+        result = generateFile(result, _meta);
+
         return result;
     }
 }

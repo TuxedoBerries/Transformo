@@ -18,10 +18,10 @@ package org.juanssl.transformo.code.generator;
 
 /**
  *
- * @author Juan
+ * @author Juan Silva
  */
 public class Modifiers {
-    
+
     private static final String CAPITAL_CASE = ":capital_case";
     private static final String SENTENCE_CASE = ":sentence_case";
     private static final String LOWER_CASE = ":lower_case";
@@ -31,197 +31,198 @@ public class Modifiers {
     private static final String CLASS_CASE = ":class_case";
     private static final String UNDERSCORE_SPACE = ":underscore_space";
     private static final String CLEAN_COMMA = ":clean";
-    
-    public static String Apply(String src, int current, int total){
+
+    public static String apply(String src, int current, int total) {
         String returnData = src;
-        
-        if(returnData.contains(CLEAN_COMMA)){
-            if(current+1 < total){
+
+        if (returnData.contains(CLEAN_COMMA)) {
+            if (current + 1 < total) {
                 returnData = returnData.replace(CLEAN_COMMA, "");
-            }else{
+            } else {
                 returnData = "";
             }
             return returnData;
         }
-        
-        returnData = Apply(returnData);
+
+        returnData = apply(returnData);
         return returnData;
     }
-    
-    public static String Apply(String src){
+
+    public static String apply(String src) {
         String returnData = src;
-        
-        if(returnData.contains(CAPITAL_CASE)){
+
+        if (returnData.contains(CAPITAL_CASE)) {
             returnData = returnData.replace(CAPITAL_CASE, "");
-            returnData = ToCapitalCase(returnData);
+            returnData = Modifiers.toCapitalCase(returnData);
             return returnData;
         }
-        
-        if(returnData.contains(SENTENCE_CASE)){
+
+        if (returnData.contains(SENTENCE_CASE)) {
             returnData = returnData.replace(SENTENCE_CASE, "");
-            returnData = ToSentenceCase(returnData);
+            returnData = toSentenceCase(returnData);
             return returnData;
         }
-        
-        if(returnData.contains(LOWER_CASE)){
+
+        if (returnData.contains(LOWER_CASE)) {
             returnData = returnData.replace(LOWER_CASE, "");
             returnData = returnData.toLowerCase();
             return returnData;
         }
-        
-        if(returnData.contains(UPPER_CASE)){
+
+        if (returnData.contains(UPPER_CASE)) {
             returnData = returnData.replace(UPPER_CASE, "");
             returnData = returnData.toUpperCase();
             return returnData;
         }
-        
-        if(returnData.contains(CAMEL_CASE)){
+
+        if (returnData.contains(CAMEL_CASE)) {
             returnData = returnData.replace(CAMEL_CASE, "");
-            returnData = ToCamelCase(returnData);
+            returnData = Modifiers.toCamelCase(returnData);
             return returnData;
         }
-        
-        if(returnData.contains(SNEAK_CASE)){
+
+        if (returnData.contains(SNEAK_CASE)) {
             returnData = returnData.replace(SNEAK_CASE, "");
-            returnData = ToSneakCase(returnData);
+            returnData = toSneakCase(returnData);
             return returnData;
         }
-        
-        if(returnData.contains(CLASS_CASE)){
+
+        if (returnData.contains(CLASS_CASE)) {
             returnData = returnData.replace(CLASS_CASE, "");
-            returnData = ToClassCase(returnData);
+            returnData = Modifiers.toClassCase(returnData);
             return returnData;
         }
-        
-        if(returnData.contains(UNDERSCORE_SPACE)){
+
+        if (returnData.contains(UNDERSCORE_SPACE)) {
             returnData = returnData.replace(UNDERSCORE_SPACE, "");
-            returnData = ReplaceUnderscore(returnData);
+            returnData = replaceUnderscore(returnData);
             return returnData;
         }
-        
+
         return returnData;
     }
-    
-    public static String ReplaceUnderscore(String data){
+
+    public static String replaceUnderscore(String data) {
         String returnData = data;
         returnData = returnData.replace("_", " ");
         return returnData;
     }
-    
-    public static String ToCapitalCase(String data){
+
+    public static String toCapitalCase(String data) {
         String result = data;
         boolean containSpace = data.contains(" ");
         boolean containUnderscore = data.contains("_");
-        if(containSpace){
-            result = ToCapitalCase(data, " ");
+        if (containSpace) {
+            result = toCapitalCase(data, " ");
         }
-        if(containUnderscore){
-            result = ToCapitalCase(result, "_");
+        if (containUnderscore) {
+            result = toCapitalCase(result, "_");
         }
-        if(!containSpace && !containUnderscore){
-            result = ToSingleCapital(result);
+        if (!containSpace && !containUnderscore) {
+            result = toSingleCapital(result);
         }
         return result;
     }
-    
-    public static String ToCapitalCase(String data, String separator){
+
+    public static String toCapitalCase(String data, String separator) {
         String[] split = data.split(separator);
         StringBuilder builder = new StringBuilder();
-        for(int i=0; i<split.length; ++i){
+        for (int i = 0; i < split.length; ++i) {
             String word = split[i].toLowerCase();
-            builder.append(ToSingleCapital(word));
-            
-            if(i+1 < split.length)
+            builder.append(toSingleCapital(word));
+
+            if (i + 1 < split.length) {
                 builder.append(separator);
+            }
         }
         return builder.toString();
     }
-    
-    public static String ToSentenceCase(String data){
-        return ToSingleCapital(data);
+
+    public static String toSentenceCase(String data) {
+        return toSingleCapital(data);
     }
-    
-    public static String ToSneakCase(String data){
+
+    public static String toSneakCase(String data) {
         StringBuilder builder = new StringBuilder();
-        for(int i=0; i<data.length(); ++i){
+        for (int i = 0; i < data.length(); ++i) {
             char c = data.charAt(i);
-            if(i == 0){
-                builder.append( Character.toLowerCase(c) );
-            }else{
-                if(Character.isUpperCase(c)){
-                    builder.append( "_" );
+            if (i == 0) {
+                builder.append(Character.toLowerCase(c));
+            } else {
+                if (Character.isUpperCase(c)) {
+                    builder.append("_");
                 }
-                if(Character.isWhitespace(c)){
-                    builder.append( "_" );
+                if (Character.isWhitespace(c)) {
+                    builder.append("_");
                     continue;
                 }
-                builder.append( Character.toLowerCase(c) );
+                builder.append(Character.toLowerCase(c));
             }
         }
         String prefinal = builder.toString();
         prefinal = prefinal.replace("__", "_");
         return prefinal;
     }
-    
-    public static String ToCamelCase(String data){
+
+    public static String toCamelCase(String data) {
         String result = data;
         boolean containSpace = data.contains(" ");
         boolean containUnderscore = data.contains("_");
-        if(containSpace){
-            result = ToCamelCase(result, " ");
+        if (containSpace) {
+            result = toCamelCase(result, " ");
         }
-        if(containUnderscore){
-            result = ToCamelCase(result, "_");
+        if (containUnderscore) {
+            result = toCamelCase(result, "_");
         }
         return result;
     }
-    
-    public static String ToCamelCase(String data, String separator){
+
+    public static String toCamelCase(String data, String separator) {
         String[] split = data.split(separator);
         StringBuilder builder = new StringBuilder();
-        for(int i=0; i<split.length; ++i){
+        for (int i = 0; i < split.length; ++i) {
             String word = split[i].toLowerCase();
-            if(i == 0){
+            if (i == 0) {
                 builder.append(word);
-            }else{
-                builder.append( ToSingleCapital(word) );
+            } else {
+                builder.append(toSingleCapital(word));
             }
         }
-        
+
         return builder.toString();
     }
-    
-    public static String ToClassCase(String data){
+
+    public static String toClassCase(String data) {
         String result = data;
         boolean containSpace = data.contains(" ");
         boolean containUnderscore = data.contains("_");
-        if(containSpace){
-            result = ToClassCase(data, " ");
+        if (containSpace) {
+            result = toClassCase(data, " ");
         }
-        if(containUnderscore){
-            result = ToClassCase(result, "_");
+        if (containUnderscore) {
+            result = toClassCase(result, "_");
         }
-        if(!containSpace && !containUnderscore){
-            result = ToSingleCapital(data);
+        if (!containSpace && !containUnderscore) {
+            result = toSingleCapital(data);
         }
         return result;
     }
-    
-    public static String ToClassCase(String data, String separator){
+
+    public static String toClassCase(String data, String separator) {
         String[] split = data.split(separator);
         StringBuilder builder = new StringBuilder();
-        for(int i=0; i<split.length; ++i){
+        for (int i = 0; i < split.length; ++i) {
             String word = split[i].toLowerCase();
-            builder.append( ToSingleCapital(word) );
+            builder.append(toSingleCapital(word));
         }
         return builder.toString();
     }
-    
-    public static String ToSingleCapital(String word){
+
+    public static String toSingleCapital(String word) {
         StringBuilder builder = new StringBuilder();
         builder.append(word.substring(0, 1).toUpperCase());
         builder.append(word.substring(1).toLowerCase());
-        
+
         return builder.toString();
     }
 }

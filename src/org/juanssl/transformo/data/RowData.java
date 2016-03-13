@@ -22,34 +22,35 @@ import org.juanssl.transformo.app.Logger;
 
 /**
  *
- * @author Juan
+ * @author Juan Silva
  */
 public class RowData {
-    
+
     private final Map<FieldMeta, Object> _data;
-    
+
     /**
      * Initialize this instance
      */
-    public RowData(){
+    public RowData() {
         _data = new HashMap<>();
     }
-    
+
     /**
      * Add Data to this Row Data.
+     *
      * @param meta
-     * @param data 
+     * @param data
      */
-    public void AddData(FieldMeta meta, Object data){
-        if(_data.containsKey(meta)){
+    public void addData(FieldMeta meta, Object data) {
+        if (_data.containsKey(meta)) {
             Logger.Error("Already contains key [%s]", meta);
             return;
         }
-        
+
         FieldType type = meta.DataType;
-        switch(type){
+        switch (type) {
             case CSHARP_BOOL:
-                _data.put(meta, DataConverter.ForceCastToBoolean(data));
+                _data.put(meta, DataConverter.forceCastToBoolean(data));
                 break;
             case CSHARP_SBYTE:
             case CSHARP_BYTE:
@@ -59,88 +60,105 @@ public class RowData {
             case CSHARP_USHORT:
             case CSHARP_LONG:
             case CSHARP_ULONG:
-                _data.put(meta, DataConverter.ForceCastToLong(data));
+                _data.put(meta, DataConverter.forceCastToLong(data));
                 break;
             case CSHARP_FLOAT:
             case CSHARP_DOUBLE:
             case CSHARP_DECIMAL:
-                _data.put(meta, DataConverter.ForceCastToDouble(data));
+                _data.put(meta, DataConverter.forceCastToDouble(data));
                 break;
             case CSHARP_STRING:
             case CSHARP_CHAR:
-                _data.put(meta, DataConverter.ForceCastToString(data));
+                _data.put(meta, DataConverter.forceCastToString(data));
                 break;
-                
+
             default:
                 Logger.Error("Data Format Unknown [%s]", type);
                 break;
         }
     }
-    
+
     /**
      * Check if this instance already contains data for the given field.
+     *
      * @param meta
-     * @return 
+     * @return
      */
-    public boolean Contains(FieldMeta meta){
+    public boolean contains(FieldMeta meta) {
         return _data.containsKey(meta);
     }
-    
+
     /**
      * Gets the boolean value for the given field.
+     *
      * @param meta
-     * @return 
+     * @return
      */
-    public boolean GetBoolean(FieldMeta meta){
-        return (boolean)_data.get(meta);
+    public boolean getBoolean(FieldMeta meta) {
+        return (boolean) _data.get(meta);
     }
-    
+
     /**
      * Gets the long value for the given field.
+     *
      * @param meta
-     * @return 
+     * @return
      */
-    public long GetLong(FieldMeta meta){
-        return (long)_data.get(meta);
+    public long getLong(FieldMeta meta) {
+        return (long) _data.get(meta);
     }
-    
+
     /**
      * Gets the Double value for the given field.
+     *
      * @param meta
-     * @return 
+     * @return
      */
-    public double GetDouble(FieldMeta meta){
-        return (long)_data.get(meta);
+    public double getDouble(FieldMeta meta) {
+        return (long) _data.get(meta);
     }
-    
+
     /**
      * Gets the String value for the given field.
+     *
      * @param meta
-     * @return 
+     * @return
      */
-    public String GetString(FieldMeta meta){
-        return (String)_data.get(meta);
+    public String getString(FieldMeta meta) {
+        return (String) _data.get(meta);
     }
-    
+
     /**
-     * Gets the data value for the given field as a String regardless of the type.
+     * Gets the data value for the given field as a String regardless of the
+     * type.
+     *
      * @param meta
-     * @return 
+     * @return
      */
-    public String GetAsString(FieldMeta meta){
+    public String getAsString(FieldMeta meta) {
         return _data.get(meta).toString();
     }
-    
+
+    /**
+     * Get the data count for this row
+     *
+     * @return
+     */
+    public int getDataCount() {
+        return _data.size();
+    }
+
     /**
      * Gets the full content data for this instance
-     * @return 
+     *
+     * @return
      */
-    public Map<FieldMeta, Object> GetFullData(){
+    public Map<FieldMeta, Object> getFullData() {
         return _data;
     }
-    
+
     @Override
-    public String toString(){
-        return RowDataConverter.ConvertToFullJSON(this);
+    public String toString() {
+        return RowDataConverter.convertToFullJSON(this);
     }
 }

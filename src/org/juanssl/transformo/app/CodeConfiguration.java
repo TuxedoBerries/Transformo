@@ -20,120 +20,120 @@ import java.io.File;
 
 /**
  *
- * @author juanssl
+ * @author Juan Silva
  */
 public class CodeConfiguration {
-    
+
     public String DatabasePath;
     // Code
     public String TemplateFolderPath;
     public String TemplateFile;
     public String TargetFolder;
     public String TargetNameFormat;
-    
-    public CodeConfiguration(){
+
+    public CodeConfiguration() {
         DatabasePath = "";
         TemplateFolderPath = "";
         TemplateFile = "";
         TargetFolder = "";
         TargetNameFormat = "";
     }
-    
-    public boolean Validate(){
-        if(!CheckDatabasePath()){
+
+    public boolean validate() {
+        if (!checkDatabasePath()) {
             Logger.Error("Database Path not valid: %s", DatabasePath);
             return false;
         }
-        
-        if(!CheckTemplate()){
-            Logger.Error("Template Path not valid: %s", GetTemplateFullPath());
+
+        if (!checkTemplate()) {
+            Logger.Error("Template Path not valid: %s", getTemplateFullPath());
             return false;
         }
-        
-        if(!CheckTarget()){
-            Logger.Error("Target Path not valid: ", GetTargetFullPath());
+
+        if (!checkTarget()) {
+            Logger.Error("Target Path not valid: ", getTargetFullPath());
             return false;
         }
-        
+
         return true;
     }
-    
-    public boolean CheckDatabasePath(){
-        if(DatabasePath == null){
+
+    public boolean checkDatabasePath() {
+        if (DatabasePath == null) {
             Logger.Warning("Database Path is null");
             return false;
         }
-        
-        if(DatabasePath.isEmpty()){
+
+        if (DatabasePath.isEmpty()) {
             Logger.Warning("Database Path is Empty");
             return false;
         }
-        
-        if(!DatabasePath.endsWith(".xlsx")){
+
+        if (!DatabasePath.endsWith(".xlsx")) {
             Logger.Warning("Database is not an XLSX file");
             return false;
         }
-        
+
         File file = new File(DatabasePath);
-        if(!file.exists()){
+        if (!file.exists()) {
             Logger.Warning("Database file does not exist: ", file.getAbsolutePath());
             return false;
         }
-        
+
         return true;
     }
-    
-    public boolean CheckTemplate(){
-        if(TemplateFile == null){
+
+    public boolean checkTemplate() {
+        if (TemplateFile == null) {
             Logger.Warning("Template File is null");
             return false;
         }
-        
-        if(TemplateFile.isEmpty()){
+
+        if (TemplateFile.isEmpty()) {
             Logger.Warning("Template File is empty");
             return false;
         }
-        
-        if(TemplateFolderPath != null && !TemplateFolderPath.isEmpty()){
-            if(!TemplateFolderPath.endsWith("/")){
+
+        if (TemplateFolderPath != null && !TemplateFolderPath.isEmpty()) {
+            if (!TemplateFolderPath.endsWith("/")) {
                 TemplateFolderPath = TemplateFolderPath.concat("/");
             }
         }
-        
-        File file = new File(GetTemplateFullPath());
-        if(!file.exists()){
+
+        File file = new File(getTemplateFullPath());
+        if (!file.exists()) {
             Logger.Warning("Template File does not exist: ", file.getAbsolutePath());
             return false;
         }
-        
+
         return true;
     }
-    
-    public boolean CheckTarget(){
-        if(TargetNameFormat == null){
+
+    public boolean checkTarget() {
+        if (TargetNameFormat == null) {
             Logger.Warning("Target File Name is null");
             return false;
         }
-        
-        if(TargetNameFormat.isEmpty()){
+
+        if (TargetNameFormat.isEmpty()) {
             Logger.Warning("Target File Name is empty");
             return false;
         }
-        
-        if(TargetFolder != null && !TargetFolder.isEmpty()){
-            if(!TargetFolder.endsWith("/")){
+
+        if (TargetFolder != null && !TargetFolder.isEmpty()) {
+            if (!TargetFolder.endsWith("/")) {
                 TargetFolder = TargetFolder.concat("/");
             }
         }
-        
+
         return true;
     }
-    
-    public String GetTemplateFullPath() {
+
+    public String getTemplateFullPath() {
         return TemplateFolderPath.concat(TemplateFile);
     }
-    
-    public String GetTargetFullPath() {
+
+    public String getTargetFullPath() {
         return TargetFolder.concat(TargetNameFormat);
     }
 }

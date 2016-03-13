@@ -18,31 +18,31 @@ package org.juanssl.transformo.app;
 
 /**
  *
- * @author juanssl
+ * @author Juan Silva
  */
 public class Logger {
-    
-    public static void Info(String message){
+
+    public static void Info(String message) {
         System.out.println(message);
     }
-    
-    public static void Info(String message, Object... params){
+
+    public static void Info(String message, Object... params) {
         System.out.println(String.format(message, params));
     }
-    
-    public static void Warning(String message){
+
+    public static void Warning(String message) {
         System.out.println("[WARNING] ".concat(message));
     }
-    
-    public static void Warning(String message, Object... params){
+
+    public static void Warning(String message, Object... params) {
         System.out.println(String.format("[WARNING] ".concat(message), params));
     }
-    
-    public static void Error(String message){
+
+    public static void Error(String message) {
         System.err.println("[ERROR] ".concat(message));
     }
-    
-    public static void Error(String message, Object... params){
+
+    public static void Error(String message, Object... params) {
         System.err.println(String.format("[ERROR] ".concat(message), params));
     }
 }

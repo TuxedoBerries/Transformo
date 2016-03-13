@@ -21,12 +21,13 @@ import org.juanssl.transformo.app.Logger;
 
 /**
  *
- * @author Juan
+ * @author Juan Silva
  */
 public class FieldTypeTranslations {
+
     private static final HashMap<String, FieldType> _cSharpTranslation = new HashMap<>();
     private static final HashMap<FieldType, String> _cSharpTranslationBack = new HashMap<>();
-    
+
     static {
         // C# Translations from String
         _cSharpTranslation.put(AllowedFieldType.BYTE, FieldType.CSHARP_BYTE);
@@ -43,15 +44,15 @@ public class FieldTypeTranslations {
         _cSharpTranslation.put(AllowedFieldType.BOOL, FieldType.CSHARP_BOOL);
         _cSharpTranslation.put(AllowedFieldType.STRING, FieldType.CSHARP_STRING);
         _cSharpTranslation.put(AllowedFieldType.DECIMAL, FieldType.CSHARP_DECIMAL);
-        
+
         // C# Translations from Type
-        for(String name : _cSharpTranslation.keySet()){
+        for (String name : _cSharpTranslation.keySet()) {
             _cSharpTranslationBack.put(_cSharpTranslation.get(name), name);
         }
     }
-    
-    public static boolean isNumeric(FieldType type){
-        switch(type){
+
+    public static boolean isNumeric(FieldType type) {
+        switch (type) {
             case CSHARP_BYTE:
             case CSHARP_SBYTE:
             case CSHARP_SHORT:
@@ -65,44 +66,46 @@ public class FieldTypeTranslations {
             case CSHARP_DECIMAL:
                 return true;
         }
-        
+
         return false;
     }
-    
-    public static boolean isText(FieldType type){
-        switch(type){
+
+    public static boolean isText(FieldType type) {
+        switch (type) {
             case CSHARP_CHAR:
             case CSHARP_STRING:
                 return true;
         }
-        
+
         return false;
     }
-    
-    public static boolean isBoolean(FieldType type){
-        switch(type){
+
+    public static boolean isBoolean(FieldType type) {
+        switch (type) {
             case CSHARP_BOOL:
                 return true;
         }
-        
+
         return false;
     }
-    
-    public static String GetType(FieldType type){
-        if(_cSharpTranslationBack.containsKey(type))
+
+    public static String getType(FieldType type) {
+        if (_cSharpTranslationBack.containsKey(type)) {
             return _cSharpTranslationBack.get(type);
-        
+        }
+
         return "";
     }
-    
-    public static boolean ExistType(String type){
+
+    public static boolean existType(String type) {
         return _cSharpTranslation.containsKey(type);
     }
-    
-    public static FieldType GetType(String type){
-        if(_cSharpTranslation.containsKey(type))
+
+    public static FieldType getType(String type) {
+        if (_cSharpTranslation.containsKey(type)) {
             return _cSharpTranslation.get(type);
-        
+        }
+
         Logger.Warning("Returning NONE for type [%s]", type);
         return FieldType.NONE;
     }

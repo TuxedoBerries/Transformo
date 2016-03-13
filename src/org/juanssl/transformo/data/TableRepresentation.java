@@ -21,15 +21,15 @@ import java.util.List;
 
 /**
  *
- * @author Juan
+ * @author Juan Silva
  */
 public class TableRepresentation {
-    
+
     public TableMeta Meta;
-    
+
     public List<RowData> Data;
-    
-    public TableRepresentation(){
+
+    public TableRepresentation() {
         Data = new ArrayList<>();
     }
 }

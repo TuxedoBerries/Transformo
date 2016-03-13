@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 juanssl
+ * Copyright (C) 2015 Juan Silva <juanssl@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,47 +16,17 @@
  */
 package org.juanssl.transformo.data.generator;
 
-import org.juanssl.transformo.code.generator.Modifiers;
 import org.juanssl.transformo.data.RowData;
 import org.juanssl.transformo.data.RowDataConverter;
 
 /**
  *
- * @author juanssl
+ * @author Juan Silva
  */
-public class ShortJSONGenerator extends BaseGenerator {
-    
-    private StringBuilder _builder;
-    
+public class ShortJSONGenerator extends BaseJSONGenerator {
+
     @Override
-    public void Generate() {
-        _builder = new StringBuilder();
-        
-        _builder.append("{");
-        for(int i=0; i<_data.size(); ++i){
-            DataPack pack = _data.get(i);
-            _builder.append("\"");
-            _builder.append( Modifiers.ToSneakCase(pack.Meta.TableName) );
-            _builder.append("\":");
-            _builder.append("[");
-            for(int d=0; d<pack.Data.size(); ++d){
-                RowData row = pack.Data.get(d);
-                _builder.append( RowDataConverter.ConvertToShortJSON(row) );
-                
-                if(d+1 < pack.Data.size()){
-                    _builder.append(",");
-                }
-            }
-            _builder.append("]");
-            if(i+1 < _data.size()){
-                _builder.append(",");
-            }
-        }
-        _builder.append("}");
-    }
-    
-    @Override
-    public String GetData(){
-        return _builder.toString();
+    protected String getJSON(RowData data) {
+        return RowDataConverter.convertToShortJSON(data);
     }
 }

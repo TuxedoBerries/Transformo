@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 juanssl
+ * Copyright (C) 2015 Juan Silva <juanssl@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,85 +21,89 @@ import org.juanssl.transformo.code.generator.Modifiers;
 
 /**
  *
- * @author juanssl
+ * @author Juan Silva
  */
 public class RowDataConverter {
-    
+
     /**
      * Convert the given Row Data to a Full JSON Object
+     *
      * @param data
-     * @return 
+     * @return
      */
-    public static String ConvertToFullJSON(RowData data){
-        Map<FieldMeta, Object> map = data.GetFullData();
+    public static String convertToFullJSON(RowData data) {
+        Map<FieldMeta, Object> map = data.getFullData();
         StringBuilder builder = new StringBuilder();
-        
+
         builder.append("{");
         int total = map.size();
         int count = 0;
-        for(FieldMeta meta : map.keySet()){
+        for (FieldMeta meta : map.keySet()) {
             builder.append("\"");
-            builder.append(Modifiers.ToSneakCase(meta.FieldName));
+            builder.append(Modifiers.toSneakCase(meta.FieldName));
             builder.append("\"");
             builder.append(":");
-            
-            if(FieldTypeTranslations.isNumeric(meta.DataType)){
-                builder.append( map.get(meta) );
+
+            if (FieldTypeTranslations.isNumeric(meta.DataType)) {
+                builder.append(map.get(meta));
             }
-            if(FieldTypeTranslations.isText(meta.DataType)){
+            if (FieldTypeTranslations.isText(meta.DataType)) {
                 builder.append("\"");
-                builder.append( map.get(meta) );
+                builder.append(map.get(meta));
                 builder.append("\"");
             }
-            if(FieldTypeTranslations.isBoolean(meta.DataType)){
-                builder.append( map.get(meta) );
+            if (FieldTypeTranslations.isBoolean(meta.DataType)) {
+                builder.append(map.get(meta));
             }
-            
-            if(count + 1 < total)
+
+            if (count + 1 < total) {
                 builder.append(",");
+            }
             count++;
         }
         builder.append("}");
-        
+
         return builder.toString();
     }
-    
+
     /**
      * Convert the given RowData into a Short Name JSON Object
+     *
      * @param data
-     * @return 
+     * @return
      */
-    public static String ConvertToShortJSON(RowData data){
-        Map<FieldMeta, Object> map = data.GetFullData();
+    public static String convertToShortJSON(RowData data) {
+        Map<FieldMeta, Object> map = data.getFullData();
         StringBuilder builder = new StringBuilder();
-        
+
         builder.append("{");
         int total = map.size();
         int count = 0;
-        for(FieldMeta meta : map.keySet()){
+        for (FieldMeta meta : map.keySet()) {
             builder.append("\"");
-            builder.append(Modifiers.ToSneakCase(meta.FieldShortName));
+            builder.append(Modifiers.toSneakCase(meta.FieldShortName));
             builder.append("\"");
             builder.append(":");
-            
-            if(FieldTypeTranslations.isNumeric(meta.DataType)){
-                builder.append( map.get(meta) );
+
+            if (FieldTypeTranslations.isNumeric(meta.DataType)) {
+                builder.append(map.get(meta));
             }
-            if(FieldTypeTranslations.isText(meta.DataType)){
+            if (FieldTypeTranslations.isText(meta.DataType)) {
                 builder.append("\"");
-                builder.append( map.get(meta) );
+                builder.append(map.get(meta));
                 builder.append("\"");
             }
-            if(FieldTypeTranslations.isBoolean(meta.DataType)){
-                builder.append( map.get(meta) );
+            if (FieldTypeTranslations.isBoolean(meta.DataType)) {
+                builder.append(map.get(meta));
             }
-            
-            if(count + 1 < total)
+
+            if (count + 1 < total) {
                 builder.append(",");
+            }
             count++;
         }
         builder.append("}");
-        
+
         return builder.toString();
     }
 }

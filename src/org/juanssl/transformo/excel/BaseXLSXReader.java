@@ -24,58 +24,59 @@ import org.juanssl.transformo.app.Logger;
 
 /**
  *
- * @author Juan
+ * @author Juan Silva
  */
 public abstract class BaseXLSXReader {
-    
+
     protected String _filePath;
     protected XSSFWorkbook _workBook;
     private File _file;
     private FileInputStream _stream;
-    
-    public void Read(){
-        if(!OpenFile())
-            return;
-        
-        if(!OpenStrean()){
-            CloseFile();
+
+    public void read() {
+        if (!openFile()) {
             return;
         }
-        
-        if(!OpenWorkbook()){
-            CloseFile();
-            CloseStream();
+
+        if (!openStrean()) {
+            closeFile();
             return;
         }
-        
+
+        if (!openWorkbook()) {
+            closeFile();
+            closeStream();
+            return;
+        }
+
         try {
             doRead();
         } catch (Exception ex) {
             Logger.Error("Error Reading File: %s", ex.toString());
         }
-        
-        CloseWorkbook();
-        CloseStream();
-        CloseFile();
+
+        closeWorkbook();
+        closeStream();
+        closeFile();
     }
-    
+
     protected abstract void doRead();
-    
-    private boolean OpenFile(){
+
+    private boolean openFile() {
         _file = new File(_filePath);
-        if(!_file.exists()){
+        if (!_file.exists()) {
             Logger.Error("File does not exist");
             return false;
         }
-        
+
         return true;
     }
-    
-    private void CloseFile(){
+
+    private void closeFile() {
         _file = null;
     }
-    
-    private boolean OpenStrean(){
+
+    private boolean openStrean() {
         boolean retValue = true;
         try {
             _stream = new FileInputStream(_file);
@@ -83,14 +84,15 @@ public abstract class BaseXLSXReader {
             Logger.Error("Error reading file: %s", ex.toString());
             retValue = false;
         }
-        
+
         return retValue;
     }
-    
-    private void CloseStream(){
-        if(_stream == null)
+
+    private void closeStream() {
+        if (_stream == null) {
             return;
-        
+        }
+
         try {
             _stream.close();
         } catch (IOException ex) {
@@ -98,8 +100,8 @@ public abstract class BaseXLSXReader {
         }
         _stream = null;
     }
-    
-    private boolean OpenWorkbook(){
+
+    private boolean openWorkbook() {
         boolean retValue = true;
         try {
             _workBook = new XSSFWorkbook(_stream);
@@ -109,11 +111,12 @@ public abstract class BaseXLSXReader {
         }
         return retValue;
     }
-    
-    private void CloseWorkbook(){
-        if(_workBook == null)
+
+    private void closeWorkbook() {
+        if (_workBook == null) {
             return;
-        
+        }
+
         try {
             _workBook.close();
         } catch (IOException ex) {

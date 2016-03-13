@@ -18,7 +18,7 @@ package org.juanssl.transformo.data.generator;
 
 /**
  *
- * @author juanssl
+ * @author Juan Silva
  */
 public enum DataFormat {
     NONE,

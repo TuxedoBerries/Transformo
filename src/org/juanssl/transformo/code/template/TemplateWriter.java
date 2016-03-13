@@ -24,53 +24,54 @@ import org.juanssl.transformo.app.Logger;
 
 /**
  *
- * @author Juan
+ * @author Juan Silva
  */
 public class TemplateWriter {
-    
+
     private File _file;
     private FileWriter _fileWriter;
     private BufferedWriter _bufferedWriter;
-    
-    
-    public void WriteFile(String path, String content){
-        if(!CreateFile(path))
-            return;
-        
-        if(!OpenFileWriter())
-            return;
-        
-        if(!OpenBufferedWriter()){
-            CloseFileWriter();
-            CloseFile();
+
+    public void writeFile(String path, String content) {
+        if (!createFile(path)) {
             return;
         }
-        
+
+        if (!openFileWriter()) {
+            return;
+        }
+
+        if (!openBufferedWriter()) {
+            closeFileWriter();
+            closeFile();
+            return;
+        }
+
         Logger.Info("Writing data to [%s]", _file.getPath());
-        WriteToFile(content);
-        
-        CloseBufferedWriter();
-        CloseFileWriter();
-        CloseFile();
+        writeToFile(content);
+
+        closeBufferedWriter();
+        closeFileWriter();
+        closeFile();
     }
-    
-    private boolean CreateFile(String path){
+
+    private boolean createFile(String path) {
         _file = new File(path);
-        if(_file.exists()){
+        if (_file.exists()) {
             Logger.Warning("File already exit. Overwriting file [%s]", _file.getPath());
             return true;
         }
-        
+
         // Create Folder if does not exist
         File folder = _file.getParentFile();
-        if(folder != null && !folder.exists()){
+        if (folder != null && !folder.exists()) {
             boolean result = folder.mkdirs();
-            if(!result){
+            if (!result) {
                 Logger.Warning("Could not create parent folder");
                 return false;
             }
         }
-        
+
         // Create File
         try {
             _file.createNewFile();
@@ -78,45 +79,45 @@ public class TemplateWriter {
             Logger.Error("Could not create file[%s]: %s", path, ex.toString());
             return false;
         }
-        
+
         return true;
     }
-    
-    private void CloseFile(){
+
+    private void closeFile() {
         _file = null;
     }
-    
-    private boolean OpenFileWriter(){
+
+    private boolean openFileWriter() {
         try {
             _fileWriter = new FileWriter(_file.getAbsoluteFile());
         } catch (IOException ex) {
             Logger.Error("Could not create File Writer [%s]: %s", _file.getPath(), ex.toString());
             return false;
         }
-        
+
         return true;
     }
-    
-    private void CloseFileWriter(){
-        if(_fileWriter == null){
+
+    private void closeFileWriter() {
+        if (_fileWriter == null) {
             return;
         }
-        
+
         try {
             _fileWriter.close();
         } catch (IOException ex) {
             Logger.Error("Could not close File Writer: %s", ex.toString());
         }
-        
+
         _fileWriter = null;
     }
-    
-    private boolean OpenBufferedWriter(){
+
+    private boolean openBufferedWriter() {
         _bufferedWriter = new BufferedWriter(_fileWriter);
         return true;
     }
-    
-    private boolean WriteToFile(String content){
+
+    private boolean writeToFile(String content) {
         try {
             _bufferedWriter.write(content);
         } catch (IOException ex) {
@@ -124,17 +125,18 @@ public class TemplateWriter {
         }
         return true;
     }
-    
-    private void CloseBufferedWriter(){
-        if(_bufferedWriter == null)
+
+    private void closeBufferedWriter() {
+        if (_bufferedWriter == null) {
             return;
-        
+        }
+
         try {
             _bufferedWriter.close();
         } catch (IOException ex) {
             Logger.Error("Could not close Buffered Writer: %s", ex.toString());
         }
-        
+
         _bufferedWriter = null;
     }
 }

@@ -33,74 +33,82 @@ import org.juanssl.transformo.excel.XLSXDataReader;
 
 /**
  *
- * @author juanssl
+ * @author Juan Silva
  */
 public class Transformo {
-    
+
     private final CodeConfiguration _configByTable;
     private final CodeConfiguration _configByField;
     private final DataConfiguration _dataConfig;
     private final TemplateWriter _writer;
-    
+
     /**
      * Initialize this instance
      */
-    public Transformo(){
+    public Transformo() {
         _configByTable = new CodeConfiguration();
         _configByField = new CodeConfiguration();
         _dataConfig = new DataConfiguration();
         _writer = new TemplateWriter();
     }
-    
+
     /**
-     * Get the current configuration for Tables.
-     * This configuration works for generating code using the table information
+     * Get the current configuration for Tables. This configuration works for
+     * generating code using the table information
+     *
      * @return Table Configuration
      */
-    public CodeConfiguration GetCurrentConfigurationByTable(){
+    public CodeConfiguration getCurrentConfigurationByTable() {
         return _configByTable;
     }
-    
+
     /**
-     * Get the current configuration for fields.
-     * This configuration works for generating code using the
-     * unique information of each field in all the tables.
-     * @return 
+     * Get the current configuration for fields. This configuration works for
+     * generating code using the unique information of each field in all the
+     * tables.
+     *
+     * @return
      */
-    public CodeConfiguration GetCurrentConfigurationByField(){
+    public CodeConfiguration getCurrentConfigurationByField() {
         return _configByField;
     }
-    
+
     /**
-     * Get the current data configuration.
-     * This configuration holds the parameters to export data.
-     * @return 
+     * Get the current data configuration. This configuration holds the
+     * parameters to export data.
+     *
+     * @return
      */
-    public DataConfiguration GetCurrentDataConfiguration(){
+    public DataConfiguration getCurrentDataConfiguration() {
         return _dataConfig;
     }
-    
+
     /**
-     * Generate or export the given data source using the internal configuration.
+     * Generate or export the given data source using the internal
+     * configuration.
      */
-    public void GenerateData(){
-        GenerateData(_dataConfig);
+    public void generateData() {
+        generateData(_dataConfig);
     }
-    
+
     /**
-     * Generate or export the given data source using the the given configuration.
-     * @param config 
+     * Generate or export the given data source using the the given
+     * configuration.
+     *
+     * @param config
      */
-    public void GenerateData(DataConfiguration config){
-        if(config == null)
+    public void generateData(DataConfiguration config) {
+        if (config == null) {
             return;
-        
-        if(!config.Validate())
+        }
+
+        if (!config.validate()) {
             return;
-        
+        }
+
         // Create Generator
         BaseGenerator dataGenerator = null;
-        switch(config.TargetDataFormat){
+        switch (config.TargetDataFormat) {
             case JSON:
                 dataGenerator = new JSONGenerator();
                 break;
@@ -108,142 +116,153 @@ public class Transformo {
                 dataGenerator = new ShortJSONGenerator();
                 break;
         }
-        if(dataGenerator == null)
+        if (dataGenerator == null) {
             return;
-        
+        }
+
         // Generate
         XLSXTableMetaReader reader = new XLSXTableMetaReader(config.DatabasePath);
-        reader.Read();
-        List<TableMeta> tables = reader.GetTables();
-        
+        reader.read();
+        List<TableMeta> tables = reader.getTables();
+
         XLSXDataReader dataReader = new XLSXDataReader(config.DatabasePath);
-        for(int i=0; i<tables.size(); ++i){
+        for (int i = 0; i < tables.size(); ++i) {
             TableMeta tmeta = tables.get(i);
-            dataReader.SetTable(tmeta);
-            dataReader.Read();
-            
-            List<RowData> list = dataReader.GetData();
-            dataGenerator.AddData(tmeta, list);
+            dataReader.setTable(tmeta);
+            dataReader.read();
+
+            List<RowData> list = dataReader.getData();
+            dataGenerator.addData(tmeta, list);
         }
-        
-        dataGenerator.Generate();
-        _writer.WriteFile(config.GetTargetDataFullPath(), dataGenerator.GetData());
+
+        dataGenerator.generate();
+        _writer.writeFile(config.getTargetDataFullPath(), dataGenerator.getData());
     }
-    
+
     /**
-     * Generate code using the table information.
-     * This uses the internal configuration.
+     * Generate code using the table information. This uses the internal
+     * configuration.
      */
-    public void GenerateCodeByTables(){
-        GenerateCodeByTables(_configByTable);
+    public void generateCodeByTables() {
+        generateCodeByTables(_configByTable);
     }
-    
+
     /**
-     * Generate code using the table information.
-     * This uses the given configuration.
-     * @param config 
+     * Generate code using the table information. This uses the given
+     * configuration.
+     *
+     * @param config
      */
-    public void GenerateCodeByTables(CodeConfiguration config){
-        if(config == null)
+    public void generateCodeByTables(CodeConfiguration config) {
+        if (config == null) {
             return;
-        
-        if(!config.Validate())
+        }
+
+        if (!config.validate()) {
             return;
-        
+        }
+
         // Get the Table Data
-        List<TableMeta> tables = GetTables(config);
-        
+        List<TableMeta> tables = getTables(config);
+
         // Configure Template Reader
         TemplateReader templateReader = new TemplateReader(config.TemplateFile, config.TemplateFolderPath);
-        String template = templateReader.ReadTemplate();
-        
+        String template = templateReader.readTemplate();
+
         // Iterate
-        for(int i=0; i<tables.size(); ++i){
+        for (int i = 0; i < tables.size(); ++i) {
             TableMeta tmeta = tables.get(i);
             Logger.Info("Generating Code for: %s", tmeta.TableName);
             EntityGenerator generator = new EntityGenerator(tmeta);
-            generator.SetTemplateReader(templateReader);
-            String fileData = generator.Generate(template);
-            String fileName = generator.Generate(config.GetTargetFullPath());
-            _writer.WriteFile(fileName, fileData);
+            generator.setTemplateReader(templateReader);
+            String fileData = generator.generate(template);
+            String fileName = generator.generate(config.getTargetFullPath());
+            _writer.writeFile(fileName, fileData);
         }
     }
-    
+
     /**
-     * Generate code using the fields information.
-     * This uses the internal configuration.
+     * Generate code using the fields information. This uses the internal
+     * configuration.
      */
-    public void GenerateCodeByFields(){
-        GenerateCodeByFields(_configByField);
+    public void generateCodeByFields() {
+        generateCodeByFields(_configByField);
     }
-    
+
     /**
-     * Generate code using the table information.
-     * This uses the given configuration.
-     * @param config 
+     * Generate code using the table information. This uses the given
+     * configuration.
+     *
+     * @param config
      */
-    public void GenerateCodeByFields(CodeConfiguration config){
-        if(config == null)
+    public void generateCodeByFields(CodeConfiguration config) {
+        if (config == null) {
             return;
-        
-        if(!config.Validate())
+        }
+
+        if (!config.validate()) {
             return;
-        
+        }
+
         // Get the Table Data
-        List<TableMeta> tables = GetTables(config);
-        
+        List<TableMeta> tables = getTables(config);
+
         // Configure Template Reader
         TemplateReader templateReader = new TemplateReader(config.TemplateFile, config.TemplateFolderPath);
-        String template = templateReader.ReadTemplate();
-        
+        String template = templateReader.readTemplate();
+
         // Gather all different fields
         List<FieldMeta> fields = new ArrayList<>();
-        for(int i=0; i<tables.size(); ++i){
+        for (int i = 0; i < tables.size(); ++i) {
             TableMeta tmeta = tables.get(i);
-            for(int fieldIndex=0; fieldIndex<tmeta.Fields.size(); ++fieldIndex){
+            for (int fieldIndex = 0; fieldIndex < tmeta.Fields.size(); ++fieldIndex) {
                 FieldMeta fmeta = tmeta.Fields.get(fieldIndex);
-                if(!ContainsField(fields, fmeta)){
+                if (!containsField(fields, fmeta)) {
                     fields.add(fmeta);
                 }
             }
         }
-        
+
         // Iterate
-        for(int i=0; i<fields.size(); ++i){
+        for (int i = 0; i < fields.size(); ++i) {
             FieldMeta fmeta = fields.get(i);
             Logger.Info("Generating Code for: %s", fmeta.FieldName);
             FieldGenerator igenerator = new FieldGenerator(fmeta);
-            igenerator.SetTemplateReader(templateReader);
-            String fileData = igenerator.Generate(template);
-            String fileName = igenerator.Generate(config.GetTargetFullPath());
-            _writer.WriteFile(fileName, fileData);
+            igenerator.setTemplateReader(templateReader);
+            String fileData = igenerator.generate(template);
+            String fileName = igenerator.generate(config.getTargetFullPath());
+            _writer.writeFile(fileName, fileData);
         }
     }
-    
+
     /**
-     * Checks if the List of fields contains the given one, not by reference, by value.
+     * Checks if the List of fields contains the given one, not by reference, by
+     * value.
+     *
      * @param fields
      * @param meta
-     * @return 
+     * @return
      */
-    private boolean ContainsField(List<FieldMeta> fields, FieldMeta meta){
-        for(int i=0; i<fields.size(); ++i){
+    private boolean containsField(List<FieldMeta> fields, FieldMeta meta) {
+        for (int i = 0; i < fields.size(); ++i) {
             FieldMeta field = fields.get(i);
-            if(FieldMeta.Equals(field, meta))
+            if (FieldMeta.equals(field, meta)) {
                 return true;
+            }
         }
-        
+
         return false;
     }
-    
+
     /**
      * Generates the Table information.
+     *
      * @param config
      * @return Table Information
      */
-    private List<TableMeta> GetTables(CodeConfiguration config){
+    private List<TableMeta> getTables(CodeConfiguration config) {
         XLSXTableMetaReader reader = new XLSXTableMetaReader(config.DatabasePath);
-        reader.Read();
-        return reader.GetTables();
+        reader.read();
+        return reader.getTables();
     }
 }

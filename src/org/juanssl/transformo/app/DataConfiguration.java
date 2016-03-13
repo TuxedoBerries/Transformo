@@ -21,93 +21,95 @@ import org.juanssl.transformo.data.generator.DataFormat;
 
 /**
  *
- * @author juanssl
+ * @author Juan Silva
  */
 public class DataConfiguration {
-    
+
     public String DatabasePath;
     // Data
     public DataFormat TargetDataFormat;
     public String TargetDataFile;
     public String TargetDataFolder;
-    
+
     /**
      * Initialize this instance
      */
-    public DataConfiguration(){
+    public DataConfiguration() {
         TargetDataFile = "";
         TargetDataFolder = "";
         TargetDataFormat = DataFormat.NONE;
     }
-    
+
     /**
      * Validate this configuration
-     * @return 
+     *
+     * @return
      */
-    public boolean Validate(){
-        if(!CheckDatabasePath()){
+    public boolean validate() {
+        if (!checkDatabasePath()) {
             Logger.Error("Database Path not valid: %s", DatabasePath);
             return false;
         }
-        
-        if(!CheckTarget()){
-            Logger.Error("Target Path not valid: ", GetTargetDataFullPath());
+
+        if (!checkTarget()) {
+            Logger.Error("Target Path not valid: ", getTargetDataFullPath());
             return false;
         }
-        
+
         return true;
     }
-    
-    public boolean CheckDatabasePath(){
-        if(DatabasePath == null){
+
+    public boolean checkDatabasePath() {
+        if (DatabasePath == null) {
             Logger.Warning("Database Path is null");
             return false;
         }
-        
-        if(DatabasePath.isEmpty()){
+
+        if (DatabasePath.isEmpty()) {
             Logger.Warning("Database Path is Empty");
             return false;
         }
-        
-        if(!DatabasePath.endsWith(".xlsx")){
+
+        if (!DatabasePath.endsWith(".xlsx")) {
             Logger.Warning("Database is not an XLSX file");
             return false;
         }
-        
+
         File file = new File(DatabasePath);
-        if(!file.exists()){
+        if (!file.exists()) {
             Logger.Warning("Database file does not exist: ", file.getAbsolutePath());
             return false;
         }
-        
+
         return true;
     }
-    
-    public boolean CheckTarget(){
-        if(TargetDataFile == null){
+
+    public boolean checkTarget() {
+        if (TargetDataFile == null) {
             Logger.Warning("Target Data File Name is null");
             return false;
         }
-        
-        if(TargetDataFile.isEmpty()){
+
+        if (TargetDataFile.isEmpty()) {
             Logger.Warning("Target Data File Name is empty");
             return false;
         }
-        
-        if(TargetDataFolder != null && !TargetDataFolder.isEmpty()){
-            if(!TargetDataFolder.endsWith("/")){
+
+        if (TargetDataFolder != null && !TargetDataFolder.isEmpty()) {
+            if (!TargetDataFolder.endsWith("/")) {
                 TargetDataFolder = TargetDataFolder.concat("/");
             }
         }
-        
+
         return true;
     }
-    
+
     /**
      * Gets the Full path of the Target Data
-     * @return 
+     *
+     * @return
      */
-    public String GetTargetDataFullPath() {
+    public String getTargetDataFullPath() {
         return TargetDataFolder.concat(TargetDataFile);
     }
 }
