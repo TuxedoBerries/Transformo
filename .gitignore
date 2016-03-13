@@ -5,7 +5,7 @@ Temp
 .DS_Store
 ~$*
 /target/
-resutls
+results
 .classpath
 .project
 .settings
