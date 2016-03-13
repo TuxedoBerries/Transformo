@@ -4,3 +4,8 @@ nbproject/private
 Temp
 .DS_Store
 ~$*
+/target/
+resutls
+.classpath
+.project
+.settings
