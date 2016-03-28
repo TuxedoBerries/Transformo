@@ -1,11 +1,16 @@
-build/*
-/dist/
-nbproject/private
-Temp
+# Ignore OSX file
 .DS_Store
+
+# Ignore Excel generated files
 ~$*
-/target/
-results
+
+# Ignore compiled classes
+target/
+
+# Ignore Generated data
+Generated
+
+# Ignore Eclipse data
 .classpath
 .project
 .settings

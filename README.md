@@ -14,7 +14,9 @@ Currently Transformo works with Excel sheets in format *xls* and *xlsx*. Each sh
 
 - First is the type of the field. Most of the primitive types are supported. (byte, sbyte, int, uint, short, ushort, long, ulong, float, double, char, bool, string, decimal)
 - Second is the short version of the name of the field
-- Third is the name of the field. add a *@* at the end if the field is the key of the table. Only one key is supported.
+- Third is the name of the field. add a **@** at the end if the field is the key of the table. Only one key is supported.
+
+If the sheet name starts with a **!** the content will be ignored, this is useful in case you want to add comments, validations or others.
 
 ## Templates
 
@@ -85,7 +87,7 @@ java -jar Transformo.jar -d my_database.xlsx -fields -sfolder MyTemplates/FieldT
 This will work the same way as the other command to generate representing classes except this will represents unique fields. This is useful if you want to represent interfaces for better compatibility like Ids, names, descriptions. For example, assume that you have two models, one with ID, Name and Date and the other with Name, Description and Time. Both share the same field Name (assume the same type of data too), so you want to use the name of both to generate suggestions so you can pass the interface IName to you class instead of two different models. You can also generate an Interface that group several interfaces that can work in different places.
 
 ### Version
-0.1.27b
+0.1.28b
 
 ### Copyright
 Copyright (c) [Juan Silva](mailto:juanssl@gmail.com) All rights reserved

@@ -33,134 +33,137 @@ import org.tuxedoberries.transformo.app.Logger;
  */
 public class XLSXTableMetaReader extends BaseXLSXReader {
 
-    public static final int ROW_META_COUNT = 2;
-    private final List<TableMeta> _tableMetas;
+	public static final int ROW_META_COUNT = 2;
+	private final List<TableMeta> _tableMetas;
 
-    public XLSXTableMetaReader() {
-        _filePath = "";
-        _tableMetas = new ArrayList<TableMeta>();
-    }
+	public XLSXTableMetaReader() {
+		_filePath = "";
+		_tableMetas = new ArrayList<TableMeta>();
+	}
 
-    public XLSXTableMetaReader(String path) {
-        _filePath = path;
-        _tableMetas = new ArrayList<TableMeta>();
-    }
+	public XLSXTableMetaReader(String path) {
+		_filePath = path;
+		_tableMetas = new ArrayList<TableMeta>();
+	}
 
-    public void setFilePath(String path) {
-        _filePath = path;
-    }
+	public void setFilePath(String path) {
+		_filePath = path;
+	}
 
-    @Override
-    protected void doRead() {
-        _tableMetas.clear();
-        if (_workBook == null) {
-            Logger.Error("Work Book is null");
-            return;
-        }
+	@Override
+	protected void doRead() {
+		_tableMetas.clear();
+		if (_workBook == null) {
+			Logger.Error("Work Book is null");
+			return;
+		}
 
-        int totalCount = _workBook.getNumberOfSheets();
-        for (int i = 0; i < totalCount; ++i) {
-            TableMeta meta = generateTableMeta(_workBook.getSheetAt(i));
-            if (meta == null) {
-                continue;
-            }
+		int totalCount = _workBook.getNumberOfSheets();
+		for (int i = 0; i < totalCount; ++i) {
+			TableMeta meta = generateTableMeta(_workBook.getSheetAt(i));
+			if (meta == null) {
+				continue;
+			}
 
-            if (tableMetaAlreadyInList(meta)) {
-                continue;
-            }
+			if (tableMetaAlreadyInList(meta)) {
+				continue;
+			}
 
-            _tableMetas.add(meta);
-        }
-    }
+			_tableMetas.add(meta);
+		}
+	}
 
-    private boolean tableMetaAlreadyInList(TableMeta meta) {
-        for (int i = 0; i < _tableMetas.size(); ++i) {
-            TableMeta currentMeta = _tableMetas.get(i);
-            if (TableMeta.Equals(meta, currentMeta)) {
-                return true;
-            }
-        }
+	private boolean tableMetaAlreadyInList(TableMeta meta) {
+		for (int i = 0; i < _tableMetas.size(); ++i) {
+			TableMeta currentMeta = _tableMetas.get(i);
+			if (TableMeta.Equals(meta, currentMeta)) {
+				return true;
+			}
+		}
 
-        return false;
-    }
+		return false;
+	}
 
-    public List<TableMeta> getTables() {
-        return _tableMetas;
-    }
+	public List<TableMeta> getTables() {
+		return _tableMetas;
+	}
 
-    private TableMeta generateTableMeta(XSSFSheet sheet) {
-        int totalRows = sheet.getLastRowNum();
-        if (totalRows < ROW_META_COUNT) {
-            Logger.Warning("Total number of rows less than expected [%d]. %d Rows are expected", totalRows, ROW_META_COUNT);
-            return null;
-        }
+	private TableMeta generateTableMeta(XSSFSheet sheet) {
+		int totalRows = sheet.getLastRowNum();
+		if (totalRows < ROW_META_COUNT) {
+			Logger.Warning("Total number of rows less than expected [%d]. %d Rows are expected", totalRows,
+					ROW_META_COUNT);
+			return null;
+		}
 
-        TableMeta meta = new TableMeta();
-        meta.TableName = sheet.getSheetName();
+		TableMeta meta = new TableMeta();
+		meta.TableName = sheet.getSheetName();
+		if (meta.TableName.startsWith("!"))
+			return null;
 
-        generateTypes(sheet.getRow(0), meta);
-        generateShortNames(sheet.getRow(1), meta);
-        generateNames(sheet.getRow(2), meta);
+		generateTypes(sheet.getRow(0), meta);
+		generateShortNames(sheet.getRow(1), meta);
+		generateNames(sheet.getRow(2), meta);
 
-        return meta;
-    }
+		return meta;
+	}
 
-    private void generateNames(Row row, TableMeta tmeta) {
-        int total = row.getLastCellNum();
-        for (int i = 0; i < total; ++i) {
-            FieldMeta fmeta = tmeta.GetOrCreateField(i);
-            Cell cell = row.getCell(i);
-            if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
-                String name = cell.getStringCellValue();
-                // Clean
-                name = name.trim();
-                if (name.endsWith("@")) {
-                    name = name.replace("@", "");
-                    fmeta.IsKey = true;
-                }
+	private void generateNames(Row row, TableMeta tmeta) {
+		int total = row.getLastCellNum();
+		for (int i = 0; i < total; ++i) {
+			FieldMeta fmeta = tmeta.GetOrCreateField(i);
+			Cell cell = row.getCell(i);
+			if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
+				String name = cell.getStringCellValue();
+				// Clean
+				name = name.trim();
+				if (name.endsWith("@")) {
+					name = name.replace("@", "");
+					fmeta.IsKey = true;
+				}
 
-                fmeta.FieldName = name;
-            } else {
-                Logger.Error("Bad Cell Type [%s]. String is expected.", cell.getCellType());
-            }
-        }
-    }
+				fmeta.FieldName = name;
+			} else {
+				Logger.Error("Bad Cell Type [%s]. String is expected.", cell.getCellType());
+			}
+		}
+	}
 
-    private void generateShortNames(Row row, TableMeta tmeta) {
-        int total = row.getLastCellNum();
-        for (int i = 0; i < total; ++i) {
-            FieldMeta fmeta = tmeta.GetOrCreateField(i);
-            Cell cell = row.getCell(i);
-            if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
-                fmeta.FieldShortName = cell.getStringCellValue();
-            } else {
-                Logger.Error("Bad Cell Type [%s]. String is expected.", cell.getCellType());
-            }
-        }
-    }
+	private void generateShortNames(Row row, TableMeta tmeta) {
+		int total = row.getLastCellNum();
+		for (int i = 0; i < total; ++i) {
+			FieldMeta fmeta = tmeta.GetOrCreateField(i);
+			Cell cell = row.getCell(i);
+			if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
+				fmeta.FieldShortName = cell.getStringCellValue();
+			} else {
+				Logger.Error("Bad Cell Type [%s]. String is expected.", cell.getCellType());
+			}
+		}
+	}
 
-    private void generateTypes(Row row, TableMeta tmeta) {
-        int total = row.getLastCellNum();
-        for (int i = 0; i < total; ++i) {
-            FieldMeta fmeta = tmeta.GetOrCreateField(i);
-            fmeta.FieldIndex = i;
-            Cell cell = row.getCell(i);
-            if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
-                setDataType(cell, fmeta);
-            } else {
-                Logger.Error("Bad Cell Type [%s]. String is expected.", cell.getCellType());
-            }
-        }
-    }
+	private void generateTypes(Row row, TableMeta tmeta) {
+		int total = row.getLastCellNum();
+		for (int i = 0; i < total; ++i) {
+			FieldMeta fmeta = tmeta.GetOrCreateField(i);
+			fmeta.FieldIndex = i;
+			Cell cell = row.getCell(i);
+			if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
+				setDataType(cell, fmeta);
+			} else {
+				Logger.Error("Bad Cell Type [%s]. String is expected.", cell.getCellType());
+			}
+		}
+	}
 
-    private void setDataType(Cell cell, FieldMeta fmeta) {
-        if (cell.getCellType() != Cell.CELL_TYPE_STRING) {
-            Logger.Error("Bad Cell Type [%s]. String is expected.", cell.getCellType());
-            return;
-        }
+	private void setDataType(Cell cell, FieldMeta fmeta) {
+		if (cell.getCellType() != Cell.CELL_TYPE_STRING) {
+			Logger.Error("Bad Cell Type [%s]. String is expected.", cell.getCellType());
+			return;
+		}
 
-        String value = cell.getStringCellValue();
-        value = value.trim();
-        fmeta.DataType = FieldTypeTranslations.getType(value);
-    }
+		String value = cell.getStringCellValue();
+		value = value.trim();
+		fmeta.DataType = FieldTypeTranslations.getType(value);
+	}
 }
